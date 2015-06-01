@@ -110,7 +110,15 @@ GroundBase *RobotManagement::ground()
 
 void RobotManagement::addRobot()
 {
+    //Check the ground first. If it don't have a border, or barracks, we don't
+    //need to popup this dialog.
+    if(m_ground->border().isEmpty())
+    {
+        return;
+    }
     //Show the add robot widget.
+    m_robotManagement->disabledWidget();
+    m_robotAdd->enabledWidget();
     m_stackLayout->setCurrentWidget(m_robotAdd);
     //Make the preview show the preview robot.
     m_groundPreview->setShowPreviewPoint(true);
@@ -128,9 +136,17 @@ void RobotManagement::addRobot()
 
 void RobotManagement::manageRobot()
 {
+    //Check the ground first. If it don't have a border, or barracks, we don't
+    //need to popup this dialog.
+    if(m_ground->border().isEmpty())
+    {
+        return;
+    }
     //When you manage the robot, we must reset the ground.
     m_ground->reset();
-    //Show the manage widget.
+    //Show and enabled the manage widget, disabled the add widget.
+    m_robotAdd->disabledWidget();
+    m_robotManagement->enabledWidget();
     m_stackLayout->setCurrentWidget(m_robotManagement);
     //Hide the preview robot.
     m_groundPreview->setShowPreviewPoint(false);
@@ -177,5 +193,6 @@ void RobotManagement::onActionAddRobot(const QPointF &position,
     //Or else, display an error information.
     QMessageBox::warning(this,
                          tr("Add Robot Failed"),
-                         tr("The robot is not in the barracks, you cannot add this robot"));
+                         tr("The robot is not in the barracks, or the position has already got a robot.\n"
+                            "Please change the position of the robot."));
 }

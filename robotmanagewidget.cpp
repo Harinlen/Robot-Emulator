@@ -89,8 +89,8 @@ RobotManageWidget::RobotManageWidget(QWidget *parent) :
                                             mainLayout->widget());
     buttonLayout->setSpacing(2);
     buttonLayout->addWidget(m_okay);
-    buttonLayout->addWidget(m_cancel);
     m_cancel->setShortcut(QKeySequence(Qt::Key_Escape));
+    buttonLayout->addWidget(m_cancel);
     buttonLayout->addStretch();
     mainLayout->addLayout(buttonLayout);
 
@@ -252,6 +252,18 @@ QList<qreal> RobotManageWidget::angleList()
         angleList.append(getModelData(i, 2));
     }
     return angleList;
+}
+
+void RobotManageWidget::enabledWidget()
+{
+    m_okay->setDefault(true);
+    setEnabled(true);
+}
+
+void RobotManageWidget::disabledWidget()
+{
+    m_okay->setDefault(false);
+    setEnabled(false);
 }
 
 void RobotManageWidget::setGround(GroundBase *ground)

@@ -83,8 +83,8 @@ RobotAddWidget::RobotAddWidget(QWidget *parent) :
                                             mainLayout->widget());
     buttonLayout->setSpacing(2);
     buttonLayout->addWidget(m_okay);
-    buttonLayout->addWidget(m_cancel);
     m_cancel->setShortcut(QKeySequence(Qt::Key_Escape));
+    buttonLayout->addWidget(m_cancel);
     buttonLayout->addStretch();
     mainLayout->addLayout(buttonLayout);
 
@@ -107,6 +107,18 @@ void RobotAddWidget::updateXAndYRange(const int &minX, const int &minY,
     m_yData->setRange(minY, maxY);
 }
 
+void RobotAddWidget::enabledWidget()
+{
+    m_okay->setDefault(true);
+    setEnabled(true);
+}
+
+void RobotAddWidget::disabledWidget()
+{
+    m_okay->setDefault(false);
+    setEnabled(false);
+}
+
 void RobotAddWidget::showEvent(QShowEvent *event)
 {
     QWidget::showEvent(event);
@@ -116,6 +128,8 @@ void RobotAddWidget::showEvent(QShowEvent *event)
     m_angleData->setValue(0);
     //Update the preview.
     onActionParameterChange();
+    //Set the focus to x data edit.
+    m_xData->setFocus();
 }
 
 void RobotAddWidget::retranslate()

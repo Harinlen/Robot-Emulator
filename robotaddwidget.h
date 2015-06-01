@@ -51,6 +51,18 @@ public:
     void updateXAndYRange(const int &minX, const int &minY,
                           const int &maxX, const int &maxY);
 
+    /*!
+     * \brief Call this function will bind the default button and enabled this
+     * widget.
+     */
+    void enabledWidget();
+
+    /*!
+     * \brief Call this function will unbind the default button and disable this
+     * widget.
+     */
+    void disabledWidget();
+
 signals:
     /*!
      * \brief When this signal is emitted, the robot management dialog will be

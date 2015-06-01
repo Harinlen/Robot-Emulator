@@ -34,16 +34,13 @@ MainWindow::MainWindow(QWidget *parent) :
     m_robotManagement(new RobotManagement(this)),
     m_groundGenerator(new GenerateGround(this))
 {
-    //A hack, using box layout to make the ground the center.
-    QWidget *container=new QWidget(this);
-    //Set the central widget.
-    setCentralWidget(container);
-    QBoxLayout *mainLayout=new QBoxLayout(QBoxLayout::LeftToRight,
-                                          container);
-    container->setLayout(mainLayout);
-    //Add ground and panel to layout.
-    mainLayout->addWidget(m_ground, 1, Qt::AlignCenter);
-    mainLayout->addWidget(m_panel);
+    //Set the minimum size.
+    setMinimumSize(500, 309);
+    //Initial the scroll area.
+    QScrollArea *groundArea=new QScrollArea(this);
+    setCentralWidget(groundArea);
+    groundArea->setAlignment(Qt::AlignCenter);
+    groundArea->setWidget(m_ground);
 
     //Set the ground generator.
     m_ground->setGenerator(m_groundGenerator);

@@ -80,29 +80,26 @@ Ground::Ground(QWidget *parent) :
     retranslate();
 
     //-----Example-----
-//    QPolygonF debugBorder, debugBarracks;
-//    //Set a default border.
+//    //Border.
 //    debugBorder << QPointF(30, 60) << QPointF(120, 20)
 //                << QPointF(400, 45) << QPointF(415, 280)
 //                << QPointF(180, 340) << QPointF(15, 210);
-//    setBorder(debugBorder);
 
-//    //Set a default barracks.
+//    //Barracks.
 //    debugBarracks << QPointF(200, 200) << QPointF(200, 275)
 //                  << QPointF(275, 275) << QPointF(275, 200);
-//    setBarracks(debugBarracks);
 
-//    //Set some robots.
-//    addRobot(new Robot(203, 203));
-//    addRobot(new Robot(210, 210));
-//    addRobot(new Robot(210, 220));
-//    addRobot(new Robot(203, 210));
-//    addRobot(new Robot(210, 203));
-//    addRobot(new Robot(203, 250));
-//    addRobot(new Robot(209, 250));
-//    addRobot(new Robot(250, 210));
-//    addRobot(new Robot(203, 207));
-//    addRobot(new Robot(204, 207));
+//    //Robots.
+//    Robot(203, 203));
+//    Robot(210, 210));
+//    Robot(210, 220));
+//    Robot(203, 210));
+//    Robot(210, 203));
+//    Robot(203, 250));
+//    Robot(209, 250));
+//    Robot(250, 210));
+//    Robot(203, 207));
+//    Robot(204, 207));
 }
 
 Ground::~Ground()
@@ -413,6 +410,11 @@ void Ground::clearGroundData()
     m_robotList.clear();
     m_robotInitialAngle.clear();
     m_robotInitialPosition.clear();
+
+    //Hack way to repaint all the things. WTF!
+    hide();
+    show();
+
     //Resize ground.
     setFixedSize(0,0);
 }
