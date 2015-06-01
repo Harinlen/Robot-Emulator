@@ -23,8 +23,8 @@
 
 class QPushButton;
 class QTabWidget;
-class GroundEditor;
-class BarracksEditor;
+class PolygonEditor;
+class GroundPreviewer;
 /*!
  * \brief The GenerateGround class is a default realization of
  * GenerateGroundBase.
@@ -39,18 +39,45 @@ public:
      */
     explicit GenerateGround(QWidget *parent = 0);
 
+    /*!
+     * \brief Reimplemented from GenerateGroundBase::border().
+     */
+    QPolygonF border() const;
+
+    /*!
+     * \brief Reimplemented from GenerateGroundBase::barracks().
+     */
+    QPolygonF barracks() const;
+
 signals:
 
 public slots:
+    /*!
+     * \brief Reimplemented from GenerateGroundBase::setBorder().
+     */
+    void setBorder(const QPolygonF &border);
+
+    /*!
+     * \brief Reimplemented from GenerateGroundBase::setBarracks().
+     */
+    void setBarracks(const QPolygonF &barracks);
+
+protected:
+    /*!
+     * \brief Reimplemented from GenerateGroundBase::showEvent().
+     */
+    void showEvent(QShowEvent *event);
 
 private slots:
     void retranslate();
 
 private:
     QTabWidget *m_tabManager;
-    GroundEditor *m_groundEditor;
-    BarracksEditor *m_barracksEditor;
+    PolygonEditor *m_borderEditor, *m_barracksEditor;
+    GroundPreviewer *m_previewer;
     QPushButton *m_okay, *m_cancel;
+
+    QPolygonF m_border, m_barracks;
 };
 
 #endif // GENERATEGROUND_H

@@ -277,7 +277,15 @@ void Ground::onActionNew()
     //failed. If success, set the ground information, or else abandon.
     if(m_generator)
     {
-        m_generator->exec();
+        //Clear the previous data.
+        m_generator->setBorder(QPolygonF());
+        m_generator->setBarracks(QPolygonF());
+        //Get the new data.
+        if(QDialog::Accepted==m_generator->exec())
+        {
+            setBorder(m_generator->border());
+            setBarracks(m_generator->barracks());
+        }
     }
 }
 

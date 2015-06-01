@@ -22,11 +22,11 @@
 
 #include "pointeditor.h"
 
-#include "groundeditor.h"
+#include "polygoneditor.h"
 
 #include <QDebug>
 
-GroundEditor::GroundEditor(QWidget *parent) :
+PolygonEditor::PolygonEditor(QWidget *parent) :
     QWidget(parent),
     m_groundPoints(new QTreeView(this)),
     m_groundData(new QStandardItemModel(this))
@@ -37,7 +37,11 @@ GroundEditor::GroundEditor(QWidget *parent) :
     m_groundPoints->setDragDropMode(QAbstractItemView::NoDragDrop);
     //Link the model.
     connect(m_groundData, &QStandardItemModel::itemChanged,
-            [=]{emit groundChange(ground());});
+            [=]{emit polygonChange(polygon());});
+    connect(m_groundData, &QStandardItemModel::rowsInserted,
+            [=]{emit polygonChange(polygon());});
+    connect(m_groundData, &QStandardItemModel::rowsRemoved,
+            [=]{emit polygonChange(polygon());});
 
     //Initial the layout.
     QBoxLayout *mainLayout=new QBoxLayout(QBoxLayout::TopToBottom,
@@ -87,7 +91,7 @@ GroundEditor::GroundEditor(QWidget *parent) :
     retranslate();
 }
 
-QPolygonF GroundEditor::ground()
+QPolygonF PolygonEditor::polygon()
 {
     //Check the point count in the editor widget.
     //If it cannot build a triangle, then return a empty QPolygonF.
@@ -105,7 +109,22 @@ QPolygonF GroundEditor::ground()
     return border;
 }
 
-void GroundEditor::retranslate()
+void PolygonEditor::setPolygon(const QPolygonF &polygon)
+{
+    //Clear all the data in the ground data;
+    m_groundData->clear();
+    //Set the header data.
+    retranslate();
+    //Add all the information to ground data.
+    for(QPointF point:polygon)
+    {
+        addPoint(point);
+    }
+    //Emit the changed signal.
+    emit polygonChange(this->polygon());
+}
+
+void PolygonEditor::retranslate()
 {
     //Update ground points header.
     QStringList groundHeader;
@@ -113,7 +132,7 @@ void GroundEditor::retranslate()
     m_groundData->setHorizontalHeaderLabels(groundHeader);
 }
 
-void GroundEditor::addPoint(const QPointF &point)
+void PolygonEditor::addPoint(const QPointF &point)
 {
     //Find the if point has been in the model, ignore the same point.
     for(int i=0; i<m_groundData->rowCount(); i++)

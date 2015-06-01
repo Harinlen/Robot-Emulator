@@ -45,6 +45,9 @@ public:
      */
     bool showPreviewPoint() const;
 
+signals:
+
+public slots:
     /*!
      * \brief Set the preview border polygon.
      * \param groundBorder The border polygon.
@@ -57,9 +60,6 @@ public:
      */
     void setPreviewBarracks(const QPolygonF &groundBarracks);
 
-signals:
-
-public slots:
     /*!
      * \brief Make the preview widget to display the preview robot or not.
      * \param showPreviewPoint The preview enabled value.

@@ -16,8 +16,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef GROUNDEDITOR_H
-#define GROUNDEDITOR_H
+#ifndef POLYGONEDITOR_H
+#define POLYGONEDITOR_H
 
 #include <QWidget>
 
@@ -25,10 +25,9 @@ class QToolButton;
 class QTreeView;
 class QStandardItemModel;
 /*!
- * \brief The GroundEditor class can edit a ground-guard-bordor, and set the new
- * border to that ground.
+ * \brief The PolygonEditor class can edit or generate a QPolygon.
  */
-class GroundEditor : public QWidget
+class PolygonEditor : public QWidget
 {
     Q_OBJECT
 public:
@@ -36,13 +35,13 @@ public:
      * \brief Construct Ground Editor.
      * \param parent The parent widget.
      */
-    explicit GroundEditor(QWidget *parent = 0);
+    explicit PolygonEditor(QWidget *parent = 0);
 
     /*!
      * \brief Get the current ground.
      * \return The ground polygon.
      */
-    QPolygonF ground();
+    QPolygonF polygon();
 
 signals:
     /*!
@@ -50,9 +49,14 @@ signals:
      * emitted.
      * \param ground The new ground polygon.
      */
-    void groundChange(QPolygonF ground);
+    void polygonChange(QPolygonF polygon);
 
 public slots:
+    /*!
+     * \brief Set the polygon to be edit.
+     * \param polygon The polygon.
+     */
+    void setPolygon(const QPolygonF &polygon);
 
 private slots:
     void retranslate();
@@ -71,4 +75,4 @@ private:
     QStandardItemModel *m_groundData;
 };
 
-#endif // GROUNDEDITOR_H
+#endif // POLYGONEDITOR_H

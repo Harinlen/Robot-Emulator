@@ -33,12 +33,34 @@ public:
      * \brief Construct a GenerateGroundBase dialog.
      * \param parent Set the parent widget.
      */
-    explicit GenerateGroundBase(QWidget *parent = 0);
+    GenerateGroundBase(QWidget *parent = 0):QDialog(parent){}
+
+    /*!
+     * \brief The current border information.
+     * \return The border polygon of the editor result.
+     */
+    virtual QPolygonF border() const=0;
+
+    /*!
+     * \brief The current barracks information.
+     * \return The barracks polygon of the editor result.
+     */
+    virtual QPolygonF barracks() const=0;
 
 signals:
 
 public slots:
+    /*!
+     * \brief Set the border polygon, make the editor to display this polygon.
+     * \param border The border polygon.
+     */
+    virtual void setBorder(const QPolygonF &border)=0;
 
+    /*!
+     * \brief Set the barracks polygon, make the editor to display this polygon.
+     * \param border The barracks polygon.
+     */
+    virtual void setBarracks(const QPolygonF &barracks)=0;
 };
 
 #endif // GENERATEGROUNDBASE_H

@@ -15,14 +15,11 @@ SOURCES += \
     paneldock.cpp \
     robotaddwidget.cpp \
     generateground.cpp \
-    groundeditor.cpp \
-    generategroundbase.cpp \
-    barrackseditor.cpp \
-    barrackseditorbase.cpp \
     pointeditor.cpp \
     groundpreviewer.cpp \
     groundrealtimepreviewer.cpp \
-    groundglobal.cpp
+    groundglobal.cpp \
+    polygoneditor.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -35,11 +32,9 @@ HEADERS += \
     paneldock.h \
     robotaddwidget.h \
     generateground.h \
-    groundeditor.h \
     generategroundbase.h \
-    barrackseditor.h \
-    barrackseditorbase.h \
     pointeditor.h \
     groundpreviewer.h \
     groundrealtimepreviewer.h \
-    groundglobal.h
+    groundglobal.h \
+    polygoneditor.h
