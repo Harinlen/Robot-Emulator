@@ -17,16 +17,15 @@
  */
 #include <QPainter>
 
-#include "groundbase.h"
 #include "robot.h"
+#include "groundglobal.h"
 
-#include "groundpreviewwidget.h"
+#include "groundpreviewer.h"
 
 #include <QDebug>
 
-GroundPreviewWidget::GroundPreviewWidget(QWidget *parent) :
+GroundPreviewer::GroundPreviewer(QWidget *parent) :
     QWidget(parent),
-    m_ground(nullptr),
     m_previewGround(QPolygonF()),
     m_previewBarracks(QPolygonF()),
     m_xOffset(0),
@@ -35,26 +34,18 @@ GroundPreviewWidget::GroundPreviewWidget(QWidget *parent) :
     m_showPreviewPoint(false),
     m_previewRobot(new Robot)
 {
+    //Initial size.
     setFixedSize(200,200);
+    //Initial ground global.
+    m_groundGlobal=GroundGlobal::instance();
 }
 
-GroundPreviewWidget::~GroundPreviewWidget()
+GroundPreviewer::~GroundPreviewer()
 {
     delete m_previewRobot;
 }
 
-void GroundPreviewWidget::setGround(GroundBase *ground)
-{
-    //Save the ground.
-    m_ground=ground;
-    //Link the ground.
-    connect(m_ground, &GroundBase::borderChanged,
-            this, &GroundPreviewWidget::onActionBorderChanged);
-    connect(m_ground, &GroundBase::barracksChanged,
-            this, &GroundPreviewWidget::onActionBarracksChanged);
-}
-
-void GroundPreviewWidget::previewRobot(QPointF position, qreal angle)
+void GroundPreviewer::previewRobot(QPointF position, qreal angle)
 {
     //Save the preview data.
     m_previewRobot->setPos(pointFromGround(position));
@@ -63,24 +54,19 @@ void GroundPreviewWidget::previewRobot(QPointF position, qreal angle)
     update();
 }
 
-void GroundPreviewWidget::paintEvent(QPaintEvent *event)
+void GroundPreviewer::paintEvent(QPaintEvent *event)
 {
     QWidget::paintEvent(event);
-    //Check if we have a ground.
-    if(m_ground==nullptr)
-    {
-        return;
-    }
     //Initial the painter.
     QPainter painter(this);
     painter.setRenderHints(QPainter::Antialiasing |
                            QPainter::TextAntialiasing |
                            QPainter::SmoothPixmapTransform, true);
     //Paint the border.
-    painter.setPen(m_ground->borderColor());
+    painter.setPen(m_groundGlobal->borderColor());
     painter.drawPolygon(m_previewGround);
     //Paint the barracks.
-    painter.setPen(m_ground->barracksColor());
+    painter.setPen(m_groundGlobal->barracksColor());
     painter.drawPolygon(m_previewBarracks);
     //If display the preview robot.
     if(m_showPreviewPoint)
@@ -90,18 +76,29 @@ void GroundPreviewWidget::paintEvent(QPaintEvent *event)
     }
 }
 
-void GroundPreviewWidget::onActionBorderChanged()
+inline QPointF GroundPreviewer::pointFromGround(const QPointF &groundPoint)
 {
-    //Check if the ground is available.
-    if(m_ground==nullptr)
-    {
-        return;
-    }
-    QPolygonF groundBorder=m_ground->border(),
-                previewGroundBorder;
+    return QPointF((groundPoint.x()+m_xOffset)/m_groundParameter*width(),
+                   (groundPoint.y()+m_yOffset)/m_groundParameter*height());
+}
+
+bool GroundPreviewer::showPreviewPoint() const
+{
+    return m_showPreviewPoint;
+}
+
+void GroundPreviewer::setPreviewBorder(const QPolygonF &groundBorder)
+{
+    QPolygonF previewGroundBorder;
     //Update the ground height and width.
-    qreal groundHeight=m_ground->size().height(),
-            groundWidth=m_ground->size().width();
+    QRect borderBoundingRect=groundBorder.toPolygon().boundingRect();
+    QSize groundSize=QSize(borderBoundingRect.right(),
+                           borderBoundingRect.bottom());
+    //Bounding revise.
+    groundSize+=QSize(2+(Robot::detectRadius()<<1),
+                      2+(Robot::detectRadius()<<1));
+    qreal groundHeight=groundSize.height(),
+            groundWidth=groundSize.width();
     //Update the offset.
     if(groundHeight<groundWidth)
     {
@@ -140,17 +137,11 @@ void GroundPreviewWidget::onActionBorderChanged()
     update();
 }
 
-void GroundPreviewWidget::onActionBarracksChanged()
+void GroundPreviewer::setPreviewBarracks(const QPolygonF &groundBarracks)
 {
-    //Check if the ground is available.
-    if(m_ground==nullptr)
-    {
-        return;
-    }
-    QPolygonF barracksBorder=m_ground->barracks(),
-                previewBarracksBorder;
+    QPolygonF previewBarracksBorder;
     //Gernerate the preview border, will zoom the original ground.
-    for(QPointF borderPoint : barracksBorder)
+    for(QPointF borderPoint : groundBarracks)
     {
         previewBarracksBorder.append(pointFromGround(borderPoint));
     }
@@ -160,18 +151,7 @@ void GroundPreviewWidget::onActionBarracksChanged()
     update();
 }
 
-inline QPointF GroundPreviewWidget::pointFromGround(const QPointF &groundPoint)
-{
-    return QPointF((groundPoint.x()+m_xOffset)/m_groundParameter*width(),
-                   (groundPoint.y()+m_yOffset)/m_groundParameter*height());
-}
-bool GroundPreviewWidget::showPreviewPoint() const
-{
-    return m_showPreviewPoint;
-}
-
-void GroundPreviewWidget::setShowPreviewPoint(bool showPreviewPoint)
+void GroundPreviewer::setShowPreviewPoint(bool showPreviewPoint)
 {
     m_showPreviewPoint = showPreviewPoint;
 }
-

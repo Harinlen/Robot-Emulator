@@ -25,7 +25,7 @@ class QStackedLayout;
 class GroundBase;
 class MenuBar;
 class RobotAddWidget;
-class GroundPreviewWidget;
+class GroundRealtimePreviewer;
 /*!
  * \brief The RobotManagement class is the dialog for robot add, modify and
  * multi-robot remove.
@@ -86,7 +86,7 @@ private:
     QAction *m_actions[RobotManagementActionsCount];
 
     GroundBase *m_ground;
-    GroundPreviewWidget *m_groundPreview;
+    GroundRealtimePreviewer *m_groundPreview;
     QStackedLayout *m_stackLayout;
     RobotAddWidget *m_robotAdd;
 };

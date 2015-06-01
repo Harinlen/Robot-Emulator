@@ -22,7 +22,7 @@
 #include "robot.h"
 #include "menubar.h"
 #include "robotaddwidget.h"
-#include "groundpreviewwidget.h"
+#include "groundrealtimepreviewer.h"
 
 #include "robotmanagement.h"
 
@@ -31,7 +31,7 @@
 RobotManagement::RobotManagement(QWidget *parent) :
     QWidget(parent),
     m_ground(nullptr),
-    m_groundPreview(new GroundPreviewWidget(this)),
+    m_groundPreview(new GroundRealtimePreviewer(this)),
     m_stackLayout(new QStackedLayout),
     m_robotAdd(new RobotAddWidget(this))
 {
@@ -68,7 +68,7 @@ RobotManagement::RobotManagement(QWidget *parent) :
     connect(m_robotAdd, &RobotAddWidget::requireClose,
             this, &RobotManagement::close);
     connect(m_robotAdd, &RobotAddWidget::requirePreviewRobot,
-            m_groundPreview, &GroundPreviewWidget::previewRobot);
+            m_groundPreview, &GroundRealtimePreviewer::previewRobot);
     connect(m_robotAdd, &RobotAddWidget::requireAddRobot,
             this, &RobotManagement::onActionAddRobot);
     m_stackLayout->addWidget(m_robotAdd);

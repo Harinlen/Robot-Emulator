@@ -22,7 +22,8 @@
 #include <QWidget>
 
 class QToolButton;
-class QTableWidget;
+class QTreeView;
+class QStandardItemModel;
 /*!
  * \brief The GroundEditor class can edit a ground-guard-bordor, and set the new
  * border to that ground.
@@ -37,7 +38,19 @@ public:
      */
     explicit GroundEditor(QWidget *parent = 0);
 
+    /*!
+     * \brief Get the current ground.
+     * \return The ground polygon.
+     */
+    QPolygonF ground();
+
 signals:
+    /*!
+     * \brief When user add, modify or remove a point, then this signal will be
+     * emitted.
+     * \param ground The new ground polygon.
+     */
+    void groundChange(QPolygonF ground);
 
 public slots:
 
@@ -45,6 +58,7 @@ private slots:
     void retranslate();
 
 private:
+    inline void addPoint(const QPointF &point);
     enum GroundEditActions
     {
         AddPoint,
@@ -53,7 +67,8 @@ private:
     };
     QToolButton *m_actions[GroundEditActionsCount];
 
-    QTableWidget *m_groundPoints;
+    QTreeView *m_groundPoints;
+    QStandardItemModel *m_groundData;
 };
 
 #endif // GROUNDEDITOR_H

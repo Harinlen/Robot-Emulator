@@ -16,19 +16,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef GROUNDPREVIEWWIDGET_H
-#define GROUNDPREVIEWWIDGET_H
+#ifndef GROUNDPREVIEWER_H
+#define GROUNDPREVIEWER_H
 
 #include <QWidget>
 
-class GroundBase;
 class Robot;
+class GroundGlobal;
 /*!
  * \brief The GroundPreviewWidget class provides the basic information of a
  * ground. It will display the border and barracks, automatically zoom it to
  * specific size.
  */
-class GroundPreviewWidget : public QWidget
+class GroundPreviewer : public QWidget
 {
     Q_OBJECT
 public:
@@ -36,8 +36,8 @@ public:
      * \brief Construct a Ground preview widget.
      * \param parent The parent widget.
      */
-    explicit GroundPreviewWidget(QWidget *parent = 0);
-    ~GroundPreviewWidget();
+    explicit GroundPreviewer(QWidget *parent = 0);
+    ~GroundPreviewer();
 
     /*!
      * \brief The widget will display or hide the preview robot.
@@ -45,15 +45,21 @@ public:
      */
     bool showPreviewPoint() const;
 
+    /*!
+     * \brief Set the preview border polygon.
+     * \param groundBorder The border polygon.
+     */
+    void setPreviewBorder(const QPolygonF &groundBorder);
+
+    /*!
+     * \brief Set the preview barracks polygon.
+     * \param groundBarracks The barracks polygon.
+     */
+    void setPreviewBarracks(const QPolygonF &groundBarracks);
+
 signals:
 
 public slots:
-    /*!
-     * \brief Set the rendering Ground class.
-     * \param ground The render ground.
-     */
-    void setGround(GroundBase *ground);
-
     /*!
      * \brief Make the preview widget to display the preview robot or not.
      * \param showPreviewPoint The preview enabled value.
@@ -70,18 +76,15 @@ public slots:
 protected:
     void paintEvent(QPaintEvent *event);
 
-private slots:
-    void onActionBorderChanged();
-    void onActionBarracksChanged();
-
 private:
     inline QPointF pointFromGround(const QPointF &groundPoint);
-    GroundBase *m_ground;
     QPolygonF m_previewGround, m_previewBarracks;
 
     qreal m_xOffset, m_yOffset, m_groundParameter;
     bool m_showPreviewPoint;
     Robot *m_previewRobot;
+
+    GroundGlobal *m_groundGlobal;
 };
 
-#endif // GROUNDPREVIEWWIDGET_H
+#endif // GROUNDPREVIEWER_H

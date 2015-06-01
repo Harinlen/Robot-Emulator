@@ -22,6 +22,7 @@
 #include "groundbase.h"
 
 class QTimer;
+class GroundGlobal;
 /*!
  * \brief The Ground class a default realization of the GroundBase class.
  */
@@ -42,19 +43,9 @@ public:
     QPolygonF border() const;
 
     /*!
-     * \brief Reimplemented from GroundBase::borderColor().
-     */
-    QColor borderColor() const;
-
-    /*!
      * \brief Reimplemented from GroundBase::barracks().
      */
     QPolygonF barracks() const;
-
-    /*!
-     * \brief Reimplemented from GroundBase::barracksColor().
-     */
-    QColor barracksColor() const;
 
     /*!
      * \brief Reimplemented from GroundBase::addRobot().
@@ -87,11 +78,6 @@ public slots:
      * \brief Reimplemented from GroundBase::setBarracks(const QPolygonF &).
      */
     void setBarracks(const QPolygonF &barracks);
-
-    /*!
-     * \brief Reimplemented from GroundBase::setBorderColor(const QColor &).
-     */
-    void setBorderColor(const QColor &borderColor);
 
     /*!
      * \brief Reimplemented from GroundBase::pause().
@@ -155,7 +141,6 @@ private:
     QAction *m_actions[GroundActionsCount];
 
     QPolygonF m_border, m_barracks;
-    QColor m_borderColor, m_barracksColor, m_referenceLineColor;
     QList<Robot *> m_robotList;
 
     //Project file status.
@@ -170,6 +155,9 @@ private:
 
     QTimer *m_timeline;
     GenerateGroundBase *m_generator;
+
+    //Ground Global data.
+    GroundGlobal *m_groundGlobal;
 };
 
 #endif // GROUND_H

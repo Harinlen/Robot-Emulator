@@ -31,7 +31,7 @@ class GenerateGroundBase;
  * interfaces which a ground class should be realized.\n
  * A Ground class is the widget which is going to show up the robots,
  * borders and barracks. It has to detected all the robots and set the
- * information to all the robots. The Ground class should contains all the
+ * information to all the robots. The Ground class should contain all the
  * environmental information.
  */
 class GroundBase : public QWidget
@@ -51,23 +51,11 @@ public:
     virtual QPolygonF border() const=0;
 
     /*!
-     * \brief Get the color of the border.
-     * \return The QColor of the border.
-     */
-    virtual QColor borderColor() const=0;
-
-    /*!
      * \brief The barracks border which all the robots is going to be set at
      * beginning.
      * \return The border QPolygonF class of the barracks.
      */
     virtual QPolygonF barracks() const=0;
-
-    /*!
-     * \brief Get the color of the barracks border.
-     * \return The QColor of the barracks border.
-     */
-    virtual QColor barracksColor() const=0;
 
     /*!
      * \brief Add a robot to the ground. It will detect the start position of
@@ -78,7 +66,7 @@ public:
     virtual bool addRobot(Robot *robot)=0;
 
     /*!
-     * \brief Add a lots of robots to the ground. It will call addRobot()
+     * \brief Add a lot of robots to the ground. It will call addRobot()
      * function for several times.
      * \param robots
      */
@@ -125,12 +113,6 @@ public slots:
      * \param barracks The target barracks QPolygonF.
      */
     virtual void setBarracks(const QPolygonF &barracks)=0;
-
-    /*!
-     * \brief Sets the color of the border.
-     * \param borderColor The prefer color of the border.
-     */
-    virtual void setBorderColor(const QColor &borderColor)=0;
 
     /*!
      * \brief Pause the main time line.

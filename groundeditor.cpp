@@ -16,17 +16,28 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 #include <QBoxLayout>
-#include <QTableWidget>
+#include <QTreeView>
 #include <QToolButton>
+#include <QStandardItemModel>
+
+#include "pointeditor.h"
 
 #include "groundeditor.h"
 
+#include <QDebug>
+
 GroundEditor::GroundEditor(QWidget *parent) :
     QWidget(parent),
-    m_groundPoints(new QTableWidget(this))
+    m_groundPoints(new QTreeView(this)),
+    m_groundData(new QStandardItemModel(this))
 {
     //Configure the ground points editor.
-    m_groundPoints->setColumnCount(2);
+    m_groundPoints->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_groundPoints->setModel(m_groundData);
+    m_groundPoints->setDragDropMode(QAbstractItemView::NoDragDrop);
+    //Link the model.
+    connect(m_groundData, &QStandardItemModel::itemChanged,
+            [=]{emit groundChange(ground());});
 
     //Initial the layout.
     QBoxLayout *mainLayout=new QBoxLayout(QBoxLayout::TopToBottom,
@@ -42,9 +53,33 @@ GroundEditor::GroundEditor(QWidget *parent) :
         m_actions[i]=new QToolButton(this);
         actionLayout->addWidget(m_actions[i]);
     }
-    //Set key sequence.
-    m_actions[AddPoint]->setShortcut(QKeySequence(Qt::Key_Plus));
+    //Set the text.
+    m_actions[AddPoint]->setText("+");
+    m_actions[RemovePoint]->setText("-");
     actionLayout->addStretch();
+    //Set key sequence and actions.
+    m_actions[AddPoint]->setShortcut(QKeySequence(Qt::Key_Plus));
+    connect(m_actions[AddPoint],
+            static_cast<void (QToolButton::*)(bool)>(&QToolButton::clicked),
+            [=]
+            {
+                bool getPointResult=false;
+                QPointF targetPoint=PointEditor::getPoint(getPointResult);
+                //If user want to add this point(click ok).
+                if(getPointResult)
+                {
+                    addPoint(targetPoint);
+                }
+            });
+    connect(m_actions[RemovePoint],
+            static_cast<void (QToolButton::*)(bool)>(&QToolButton::clicked),
+            [=]
+            {
+                if(m_groundPoints->selectionModel()->currentIndex().isValid())
+                {
+                    m_groundData->removeRow(m_groundPoints->selectionModel()->currentIndex().row());
+                }
+            });
 
     mainLayout->addWidget(m_groundPoints, 1);
     mainLayout->addLayout(actionLayout);
@@ -52,14 +87,59 @@ GroundEditor::GroundEditor(QWidget *parent) :
     retranslate();
 }
 
+QPolygonF GroundEditor::ground()
+{
+    //Check the point count in the editor widget.
+    //If it cannot build a triangle, then return a empty QPolygonF.
+    if(m_groundData->rowCount()<3)
+    {
+        return QPolygonF();
+    }
+    //Build the polygon.
+    QPolygonF border;
+    for(int i=0; i<m_groundData->rowCount(); i++)
+    {
+        border.append(QPointF(m_groundData->item(i, 0)->text().toDouble(),
+                              m_groundData->item(i, 1)->text().toDouble()));
+    }
+    return border;
+}
+
 void GroundEditor::retranslate()
 {
     //Update ground points header.
     QStringList groundHeader;
     groundHeader << tr("X") << tr("Y");
-    m_groundPoints->setHorizontalHeaderLabels(groundHeader);
+    m_groundData->setHorizontalHeaderLabels(groundHeader);
+}
 
-    //Set the text.
-    m_actions[AddPoint]->setText("+");
-    m_actions[RemovePoint]->setText("-");
+void GroundEditor::addPoint(const QPointF &point)
+{
+    //Find the if point has been in the model, ignore the same point.
+    for(int i=0; i<m_groundData->rowCount(); i++)
+    {
+        if(point.x()==m_groundData->data(m_groundData->index(i, 0),
+                                         Qt::DisplayRole).toString().toDouble()
+           && point.y()==m_groundData->data(m_groundData->index(i, 1),
+                                            Qt::DisplayRole).toString().toDouble())
+        {
+            return;
+        }
+    }
+
+    //Generate the point row.
+    QList<QStandardItem *> pointRow;
+    pointRow << new QStandardItem(QString::number(point.x()))
+             << new QStandardItem(QString::number(point.y()));
+
+    //Append the row.
+    if(m_groundPoints->selectionModel()->hasSelection())
+    {
+        m_groundData->insertRow(m_groundPoints->currentIndex().row(),
+                                pointRow);
+    }
+    else
+    {
+        m_groundData->appendRow(pointRow);
+    }
 }

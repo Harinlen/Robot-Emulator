@@ -29,6 +29,7 @@
 #include "robot.h"
 #include "menubar.h"
 #include "generategroundbase.h"
+#include "groundglobal.h"
 
 #include "ground.h"
 
@@ -38,9 +39,6 @@ Ground::Ground(QWidget *parent) :
     GroundBase(parent),
     m_border(QPolygonF()),
     m_barracks(QPolygonF()),
-    m_borderColor(QColor(0,0,255)),
-    m_barracksColor(QColor(255,127,0)),
-    m_referenceLineColor(QColor(200,200,200)),
     m_filePath(QString()),
     m_fileName(QString()),
     m_changed(false),
@@ -52,6 +50,9 @@ Ground::Ground(QWidget *parent) :
     m_timeline->setInterval(16); //This will update the image for 60fps.
     connect(m_timeline, &QTimer::timeout,
             this, &Ground::onActionUpdateRobot);
+
+    //Initial the ground global.
+    m_groundGlobal=GroundGlobal::instance();
 
     //Initial the actions.
     for(int i=0; i<GroundActionsCount; i++)
@@ -162,7 +163,7 @@ void Ground::paintEvent(QPaintEvent *event)
                            QPainter::SmoothPixmapTransform, true);
     painter.translate(Robot::detectRadius(), Robot::detectRadius());
     //Draw the reference line.
-    painter.setPen(m_referenceLineColor);
+    painter.setPen(m_groundGlobal->referenceLineColor());
     painter.setBrush(QColor(0,0,0,0));
     for(int i=0; i<=height(); i+=30)
     {
@@ -173,11 +174,11 @@ void Ground::paintEvent(QPaintEvent *event)
         painter.drawLine(i, 0, i, height());
     }
     //Draw the border.
-    painter.setPen(m_borderColor);
+    painter.setPen(m_groundGlobal->borderColor());
     painter.drawPolygon(m_border);
 
     //Draw the barracks.
-    painter.setPen(m_barracksColor);
+    painter.setPen(m_groundGlobal->barracksColor());
     painter.drawPolygon(m_barracks);
 
     //Draw all the robot.
@@ -198,33 +199,37 @@ void Ground::retranslate()
 
 void Ground::onActionUpdateRobot()
 {
-    QList<Robot *>::iterator beforeLastRobot=m_robotList.end()-1;
-    //Give all the robot the detect information.
-    for(QList<Robot *>::iterator robot=m_robotList.begin();
-        robot!=beforeLastRobot;
-        ++robot)
+    //If there're more than 1 robot, we will going to detect the robot.
+    if(m_robotList.size()>1)
     {
-        for(QList<Robot *>::iterator target=robot+1;
-            target!=m_robotList.end();
-            ++target)
+        QList<Robot *>::iterator beforeLastRobot=m_robotList.end()-1;
+        //Give all the robot the detect information.
+        for(QList<Robot *>::iterator robot=m_robotList.begin();
+            robot!=beforeLastRobot;
+            ++robot)
         {
-            //Ignore the current robot.
-            if(robot==target)
+            for(QList<Robot *>::iterator target=robot+1;
+                target!=m_robotList.end();
+                ++target)
             {
-                continue;
-            }
-            //If we have detected one of another robot, add them into the both
-            //detect list.
-            if(inDetectRange(*robot, *target))
-            {
-                (*robot)->addToDetectList(*target);
-                (*target)->addToDetectList(*robot);
-            }
-            else
-            {
-                //Or else remove them from each other's detect list.
-                (*robot)->removeFromDetectList(*target);
-                (*target)->removeFromDetectList(*robot);
+                //Ignore the current robot.
+                if(robot==target)
+                {
+                    continue;
+                }
+                //If we have detected one of another robot, add them into the both
+                //detect list.
+                if(inDetectRange(*robot, *target))
+                {
+                    (*robot)->addToDetectList(*target);
+                    (*target)->addToDetectList(*robot);
+                }
+                else
+                {
+                    //Or else remove them from each other's detect list.
+                    (*robot)->removeFromDetectList(*target);
+                    (*target)->removeFromDetectList(*robot);
+                }
             }
         }
     }
@@ -614,11 +619,6 @@ QPolygonF Ground::barracks() const
     return m_barracks;
 }
 
-QColor Ground::barracksColor() const
-{
-    return m_barracksColor;
-}
-
 bool Ground::addRobot(Robot *robot)
 {
     //Check the robot.
@@ -688,18 +688,6 @@ void Ground::setBarracks(const QPolygonF &barracks)
     update();
     //Emit the barracks changed signal.
     emit barracksChanged();
-}
-
-QColor Ground::borderColor() const
-{
-    return m_borderColor;
-}
-
-void Ground::setBorderColor(const QColor &borderColor)
-{
-    m_borderColor = borderColor;
-    //Update the widget.
-    update();
 }
 
 void Ground::pause()
