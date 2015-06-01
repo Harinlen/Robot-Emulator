@@ -19,7 +19,8 @@ SOURCES += \
     groundpreviewer.cpp \
     groundrealtimepreviewer.cpp \
     groundglobal.cpp \
-    polygoneditor.cpp
+    polygoneditor.cpp \
+    robotmanagewidget.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -37,4 +38,5 @@ HEADERS += \
     groundpreviewer.h \
     groundrealtimepreviewer.h \
     groundglobal.h \
-    polygoneditor.h
+    polygoneditor.h \
+    robotmanagewidget.h

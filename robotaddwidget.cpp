@@ -84,6 +84,7 @@ RobotAddWidget::RobotAddWidget(QWidget *parent) :
     buttonLayout->setSpacing(2);
     buttonLayout->addWidget(m_okay);
     buttonLayout->addWidget(m_cancel);
+    m_cancel->setShortcut(QKeySequence(Qt::Key_Escape));
     buttonLayout->addStretch();
     mainLayout->addLayout(buttonLayout);
 

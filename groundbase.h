@@ -84,6 +84,34 @@ public:
      */
     virtual void setGenerator(GenerateGroundBase *generator)=0;
 
+    /*!
+     * \brief Get all the robots added to the ground.
+     * \return The robot QList.
+     */
+    virtual QList<Robot *> robotList() const=0;
+
+    /*!
+     * \brief Get the initial position of all the robots recorded by ground.
+     * \return The initial position list.
+     */
+    virtual QList<QPointF> robotInitialPosition() const=0;
+
+    /*!
+     * \brief Get the initial angle of all the robots recorded by ground.
+     * \return The initial angle list.
+     */
+    virtual QList<qreal> robotInitialAngle() const=0;
+
+    /*!
+     * \brief Set the robots information to the given parameters, remove the
+     * \param robots
+     * \param initialPosition
+     * \param initialAngle
+     */
+    virtual void syncRobotData(const QList<Robot *> &robots,
+                               const QList<QPointF> &initialPosition,
+                               const QList<qreal> &initialAngle)=0;
+
 signals:
     /*!
      * \brief When the user change the border, this signal will be emitted.

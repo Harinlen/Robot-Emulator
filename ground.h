@@ -66,6 +66,14 @@ public:
      * \brief Reimplemented from GroundBase::setGenerator().
      */
     void setGenerator(GenerateGroundBase *generator);
+
+    /*!
+     * \brief syncRobotData.
+     */
+    void syncRobotData(const QList<Robot *> &robots,
+                       const QList<QPointF> &initialPosition,
+                       const QList<qreal> &initialAngle);
+
 signals:
 
 public slots:
@@ -98,6 +106,21 @@ public slots:
      * \brief Reimplemented from GroundBase::reset().
      */
     void reset();
+
+    /*!
+     * \brief Reimplemented from GroundBase::robotList().
+     */
+    QList<Robot *> robotList() const;
+
+    /*!
+     * \brief Reimplemented from GroundBase::robotInitialPosition().
+     */
+    QList<QPointF> robotInitialPosition() const;
+
+    /*!
+     * \brief Reimplemented from GroundBase::robotInitialAngle().
+     */
+    QList<qreal> robotInitialAngle() const;
 
 protected:
     /*!

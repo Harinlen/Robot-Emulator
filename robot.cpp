@@ -55,6 +55,13 @@ void Robot::setPos(const QPointF &pos)
 
 void Robot::paintRobot(QPainter *painter)
 {
+    //Draw the robot.
+    painter->setPen(m_robotColor);
+    painter->drawEllipse(m_pos, m_robotSize, m_robotSize);
+}
+
+void Robot::paintRobotParameter(QPainter *painter)
+{
     //Draw the direction of the robot.
     QLineF directionLine(m_pos, m_pos+QPointF(m_detectRadius, 0));
     directionLine.setAngle(m_angle);
@@ -64,10 +71,6 @@ void Robot::paintRobot(QPainter *painter)
     //Draw the detect radius.
     painter->setPen(m_detectRadiusColor);
     painter->drawEllipse(m_pos, m_detectRadius, m_detectRadius);
-
-    //Draw the robot.
-    painter->setPen(m_robotColor);
-    painter->drawEllipse(m_pos, m_robotSize, m_robotSize);
 }
 
 int Robot::m_robotSize=2;
@@ -425,6 +428,11 @@ void Robot::resetGuardianLine()
     m_oppositeGuardianLine=QLineF();
     m_toP1Distance=0.0;
     m_movingSpeed=1.0;
+}
+
+void Robot::resetDetectList()
+{
+    m_detectedRobotList.clear();
 }
 
 void Robot::moveToOppositeDirection()

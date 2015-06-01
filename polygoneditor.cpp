@@ -154,7 +154,7 @@ void PolygonEditor::addPoint(const QPointF &point)
     //Append the row.
     if(m_groundPoints->selectionModel()->hasSelection())
     {
-        m_groundData->insertRow(m_groundPoints->currentIndex().row(),
+        m_groundData->insertRow(m_groundPoints->currentIndex().row()+1,
                                 pointRow);
     }
     else

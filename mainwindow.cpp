@@ -34,7 +34,6 @@ MainWindow::MainWindow(QWidget *parent) :
     m_robotManagement(new RobotManagement(this)),
     m_groundGenerator(new GenerateGround(this))
 {
-    setMinimumSize(400, 300);
     //A hack, using box layout to make the ground the center.
     QWidget *container=new QWidget(this);
     //Set the central widget.

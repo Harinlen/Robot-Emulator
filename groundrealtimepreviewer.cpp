@@ -15,14 +15,24 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
+#include <QPainter>
 #include "groundbase.h"
+#include "robot.h"
 
 #include "groundrealtimepreviewer.h"
 
 GroundRealtimePreviewer::GroundRealtimePreviewer(QWidget *parent) :
     GroundPreviewer(parent),
-    m_ground(nullptr)
+    m_proxyRobot(new Robot()),
+    m_ground(nullptr),
+    m_displayRobots(false),
+    m_selectedRobot(nullptr)
 {
+}
+
+GroundRealtimePreviewer::~GroundRealtimePreviewer()
+{
+    delete m_proxyRobot;
 }
 
 void GroundRealtimePreviewer::setGround(GroundBase *ground)
@@ -57,3 +67,92 @@ void GroundRealtimePreviewer::onActionBarracksChanged()
     //Set the barracks polygon.
     setPreviewBarracks(m_ground->barracks());
 }
+
+bool GroundRealtimePreviewer::displayRobots() const
+{
+    return m_displayRobots;
+}
+
+void GroundRealtimePreviewer::setDisplayRobots(bool displayRobots)
+{
+    //Save the display robot settings.
+    m_displayRobots=displayRobots;
+    //Update.
+    update();
+}
+
+void GroundRealtimePreviewer::setSelectedRobot(Robot *selectedRobot)
+{
+    //Save the selected robot.
+    m_selectedRobot=selectedRobot;
+    //Update the previewer.
+    update();
+}
+
+void GroundRealtimePreviewer::setPositionList(const QList<QPointF> &positions)
+{
+    //The size of position should be the same as robots.
+    if(positions.size()!=m_robots.size())
+    {
+        return;
+    }
+    //Save the positions.
+    m_positions=positions;
+    //Update the previewer.
+    update();
+}
+
+void GroundRealtimePreviewer::setAngleList(const QList<qreal> &angles)
+{
+    //The size of angle should be the same as robots.
+    if(angles.size()!=m_robots.size())
+    {
+        return;
+    }
+    //Save the angle list.
+    m_angles=angles;
+    //Update the previewer.
+    update();
+}
+
+void GroundRealtimePreviewer::setRobotsPreviewList(const QList<Robot *> &robots,
+                                                   const QList<QPointF> &positions,
+                                                   const QList<qreal> &angles)
+{
+    //Save all the informations.
+    m_robots=robots;
+    m_positions=positions;
+    m_angles=angles;
+    //Update the previewer.
+    update();
+}
+
+void GroundRealtimePreviewer::paintEvent(QPaintEvent *event)
+{
+    //Draw the map.
+    GroundPreviewer::paintEvent(event);
+    //If the user wants to draw the exist robot, then paint the robot.
+    if(m_displayRobots)
+    {
+        //Initial painter.
+        QPainter painter(this);
+        painter.setRenderHints(QPainter::Antialiasing |
+                               QPainter::TextAntialiasing |
+                               QPainter::SmoothPixmapTransform, true);
+        for(int i=0; i<m_positions.size(); i++)
+        {
+            //Set the preview pos to the preview robot.
+            m_proxyRobot->setPos(pointFromGround(m_positions.at(i)));
+            //Draw the robot.
+            m_proxyRobot->paintRobot(&painter);
+            //Check the selected robot
+            if(m_robots.at(i)==m_selectedRobot)
+            {
+                //Draw the parameter.
+                m_proxyRobot->setAngle(m_angles.at(i));
+                m_proxyRobot->paintRobotParameter(&painter);
+            }
+        }
+    }
+}
+

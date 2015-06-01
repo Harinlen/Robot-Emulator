@@ -79,9 +79,16 @@ public:
 
     /*!
      * \brief Paint the robot with the specific painter.
-     * \param painter
+     * \param painter The painting painter.
      */
     void paintRobot(QPainter *painter);
+
+    /*!
+     * \brief Paint the parameter of the robot with the specific painter.\n
+     * The parameters of a robots include the range and angle.
+     * \param painter The painting painter.
+     */
+    void paintRobotParameter(QPainter *painter);
 
     /*!
      * \brief Get the size of all the robots.
@@ -208,6 +215,11 @@ public:
      * \brief Clear the guardian line state data.
      */
     void resetGuardianLine();
+
+    /*!
+     * \brief Clear the detect list data.
+     */
+    void resetDetectList();
 
     /*!
      * \brief This function only available when there's a guardian line.\n

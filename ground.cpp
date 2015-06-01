@@ -184,6 +184,7 @@ void Ground::paintEvent(QPaintEvent *event)
     //Draw all the robot.
     for(Robot *robot : m_robotList)
     {
+        robot->paintRobotParameter(&painter);
         robot->paintRobot(&painter);
     }
 }
@@ -675,6 +676,31 @@ void Ground::setGenerator(GenerateGroundBase *generator)
     m_generator=generator;
 }
 
+void Ground::syncRobotData(const QList<Robot *> &robots,
+                           const QList<QPointF> &initialPosition,
+                           const QList<qreal> &initialAngle)
+{
+    //Search all the robots should be removed.
+    while(!m_robotList.isEmpty())
+    {
+        Robot *currentRobot=m_robotList.takeLast();
+        //Check the robot is still in the list.
+        if(!robots.contains(currentRobot))
+        {
+            //Delete the robot.
+            delete currentRobot;
+        }
+    }
+    //Save the new robot list, initial position list and initial angle list.
+    m_robotList=robots;
+    m_robotInitialPosition=initialPosition;
+    m_robotInitialAngle=initialAngle;
+    //Set the change flag.
+    m_changed=true;
+    //Reset the ground.
+    reset();
+}
+
 void Ground::setBarracks(const QPolygonF &barracks)
 {
     //Check if the barracks is all in the border.
@@ -731,10 +757,27 @@ void Ground::reset()
         Robot *robot=m_robotList.at(i);
         //Clear the guardian line data.
         robot->resetGuardianLine();
+        //Clear the robot cache data.
+        robot->resetDetectList();
         //Reset the robot position and angle.
         robot->setPos(m_robotInitialPosition.at(i));
         robot->setAngle(m_robotInitialAngle.at(i));
     }
     //Update the ground.
     update();
+}
+
+QList<Robot *> Ground::robotList() const
+{
+    return m_robotList;
+}
+
+QList<QPointF> Ground::robotInitialPosition() const
+{
+    return m_robotInitialPosition;
+}
+
+QList<qreal> Ground::robotInitialAngle() const
+{
+    return m_robotInitialAngle;
 }

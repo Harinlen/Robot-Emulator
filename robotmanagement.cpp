@@ -22,6 +22,7 @@
 #include "robot.h"
 #include "menubar.h"
 #include "robotaddwidget.h"
+#include "robotmanagewidget.h"
 #include "groundrealtimepreviewer.h"
 
 #include "robotmanagement.h"
@@ -29,11 +30,12 @@
 #include <QDebug>
 
 RobotManagement::RobotManagement(QWidget *parent) :
-    QWidget(parent),
+    QDialog(parent),
     m_ground(nullptr),
     m_groundPreview(new GroundRealtimePreviewer(this)),
     m_stackLayout(new QStackedLayout),
-    m_robotAdd(new RobotAddWidget(this))
+    m_robotAdd(new RobotAddWidget(this)),
+    m_robotManagement(new RobotManageWidget(this))
 {
     QBoxLayout *mainLayout=new QBoxLayout(QBoxLayout::LeftToRight,
                                           this);
@@ -73,6 +75,30 @@ RobotManagement::RobotManagement(QWidget *parent) :
             this, &RobotManagement::onActionAddRobot);
     m_stackLayout->addWidget(m_robotAdd);
 
+    //Configure the robot management widget.
+    connect(m_robotManagement, &RobotManageWidget::requireClose,
+            this, &RobotManagement::close);
+    connect(m_robotManagement, &RobotManageWidget::requireSelectRobot,
+            m_groundPreview, &GroundRealtimePreviewer::setSelectedRobot);
+    connect(m_robotManagement, &RobotManageWidget::requireUpdateAllList,
+            [=]
+            {
+                m_groundPreview->setRobotsPreviewList(m_robotManagement->robotList(),
+                                                      m_robotManagement->positionList(),
+                                                      m_robotManagement->angleList());
+            });
+    connect(m_robotManagement, &RobotManageWidget::requireUpdateAngleList,
+            [=]
+            {
+                m_groundPreview->setAngleList(m_robotManagement->angleList());
+            });
+    connect(m_robotManagement, &RobotManageWidget::requireUpdatePositionList,
+            [=]
+            {
+                m_groundPreview->setPositionList(m_robotManagement->positionList());
+            });
+    m_stackLayout->addWidget(m_robotManagement);
+
     //Retranslate.
     retranslate();
 }
@@ -88,6 +114,8 @@ void RobotManagement::addRobot()
     m_stackLayout->setCurrentWidget(m_robotAdd);
     //Make the preview show the preview robot.
     m_groundPreview->setShowPreviewPoint(true);
+    //Hide the exist robot.
+    m_groundPreview->setDisplayRobots(false);
     //Update the range.
     QRectF barracksBoundingRect=m_ground->barracks().boundingRect();
     m_robotAdd->updateXAndYRange(barracksBoundingRect.left(),
@@ -100,8 +128,14 @@ void RobotManagement::addRobot()
 
 void RobotManagement::manageRobot()
 {
+    //When you manage the robot, we must reset the ground.
+    m_ground->reset();
+    //Show the manage widget.
+    m_stackLayout->setCurrentWidget(m_robotManagement);
     //Hide the preview robot.
     m_groundPreview->setShowPreviewPoint(false);
+    //Show the exist robots.
+    m_groundPreview->setDisplayRobots(true);
     //Show the dialog.
     show();
 }
@@ -112,6 +146,8 @@ void RobotManagement::setGround(GroundBase *ground)
     m_ground = ground;
     //Give the ground to the preview.
     m_groundPreview->setGround(m_ground);
+    //Give the ground to the manage widget.
+    m_robotManagement->setGround(m_ground);
 }
 
 void RobotManagement::setMenuBar(MenuBar *menuBar)

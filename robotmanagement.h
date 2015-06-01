@@ -19,18 +19,19 @@
 #ifndef ROBOTMANAGEMENT_H
 #define ROBOTMANAGEMENT_H
 
-#include <QWidget>
+#include <QDialog>
 
 class QStackedLayout;
 class GroundBase;
 class MenuBar;
 class RobotAddWidget;
+class RobotManageWidget;
 class GroundRealtimePreviewer;
 /*!
  * \brief The RobotManagement class is the dialog for robot add, modify and
  * multi-robot remove.
  */
-class RobotManagement : public QWidget
+class RobotManagement : public QDialog
 {
     Q_OBJECT
 public:
@@ -89,6 +90,7 @@ private:
     GroundRealtimePreviewer *m_groundPreview;
     QStackedLayout *m_stackLayout;
     RobotAddWidget *m_robotAdd;
+    RobotManageWidget *m_robotManagement;
 };
 
 #endif // ROBOTMANAGEMENT_H

@@ -72,15 +72,17 @@ void GroundPreviewer::paintEvent(QPaintEvent *event)
     if(m_showPreviewPoint)
     {
         //Paint the preview robot.
+        m_previewRobot->paintRobotParameter(&painter);
         m_previewRobot->paintRobot(&painter);
     }
 }
 
-inline QPointF GroundPreviewer::pointFromGround(const QPointF &groundPoint)
+QPointF GroundPreviewer::pointFromGround(const QPointF &groundPoint)
 {
     return QPointF((groundPoint.x()+m_xOffset)/m_groundParameter*width(),
                    (groundPoint.y()+m_yOffset)/m_groundParameter*height());
 }
+
 
 bool GroundPreviewer::showPreviewPoint() const
 {
@@ -153,5 +155,8 @@ void GroundPreviewer::setPreviewBarracks(const QPolygonF &groundBarracks)
 
 void GroundPreviewer::setShowPreviewPoint(bool showPreviewPoint)
 {
+    //Save the show point settings.
     m_showPreviewPoint = showPreviewPoint;
+    //Update.
+    update();
 }

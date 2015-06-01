@@ -74,10 +74,19 @@ public slots:
     void previewRobot(QPointF position, qreal angle);
 
 protected:
+    /*!
+     * \brief Reimplemented from QWidget::paintEvent().
+     */
     void paintEvent(QPaintEvent *event);
 
+    /*!
+     * \brief Get the point in preview mode mapped from the Ground class.
+     * \param groundPoint The point on the Ground class.
+     * \return The point mapped in the preview.
+     */
+    QPointF pointFromGround(const QPointF &groundPoint);
+
 private:
-    inline QPointF pointFromGround(const QPointF &groundPoint);
     QPolygonF m_previewGround, m_previewBarracks;
 
     qreal m_xOffset, m_yOffset, m_groundParameter;
