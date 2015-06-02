@@ -16,48 +16,37 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef ABOUT_H
+#define ABOUT_H
 
-#include <QMainWindow>
+#include <QDialog>
 
-class QScrollArea;
-class Ground;
-class PanelDock;
 class MenuBar;
-class RobotManagement;
-class GenerateGround;
 /*!
- * \brief The MainWindow class is the top widget of all the visible widget. The
- * only mission of MainWindow is going to show the Ground widget and take the
- * fully management of the Ground widget.
+ * \brief The About class is a window to display the basic information of this
+ * emulator.
  */
-class MainWindow : public QMainWindow
+class About : public QDialog
 {
     Q_OBJECT
 public:
     /*!
-     * \brief Constructs the MainWindow with the given parent. This class should
-     * only be constructed by main() function.
+     * \brief Show the about window.
      * \param parent The parent widget.
      */
-    explicit MainWindow(QWidget *parent = 0);
+    static void showAbout(QWidget *parent=0);
 
 signals:
 
 public slots:
 
-private slots:
-    void retranslate();
-
 private:
-    Ground *m_ground;
-    PanelDock *m_panel;
-    MenuBar *m_menuBar;
-    RobotManagement *m_robotManagement;
-    GenerateGround *m_groundGenerator;
+    /*!
+     * \brief Construct About class.
+     * \param parent The parent widget.
+     */
+    explicit About(QWidget *parent = 0);
 
-    QAction *m_about;
 };
 
-#endif // MAINWINDOW_H
+#endif // ABOUT_H

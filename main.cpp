@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
     //Set application information.
     QApplication::setApplicationName("Robot Emulator");
     QApplication::setApplicationDisplayName("Robot Emulator");
+    QApplication::setApplicationVersion("1.0");
     //Conrtruct main window.
     MainWindow mainWindow;
     mainWindow.show();

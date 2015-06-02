@@ -17,7 +17,9 @@
  */
 #include <QBoxLayout>
 #include <QScrollArea>
+#include <QAction>
 
+#include "about.h"
 #include "ground.h"
 #include "paneldock.h"
 #include "menubar.h"
@@ -32,7 +34,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_panel(new PanelDock(this)),
     m_menuBar(new MenuBar(this)),
     m_robotManagement(new RobotManagement(this)),
-    m_groundGenerator(new GenerateGround(this))
+    m_groundGenerator(new GenerateGround(this)),
+    m_about(new QAction(this))
 {
     //Set properties.
     setWindowIcon(QIcon("://res/icon.png"));
@@ -50,6 +53,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_panel->setGround(m_ground);
     m_robotManagement->setGround(m_ground);
 
+    //Add action to menubar.
+    m_menuBar->addCategoryAction(MenuBar::Help, m_about);
     //Give the menu bar to elements.
     m_ground->setMenuBar(m_menuBar);
     m_panel->setMenuBar(m_menuBar);
@@ -59,9 +64,21 @@ MainWindow::MainWindow(QWidget *parent) :
     addDockWidget(Qt::RightDockWidgetArea, m_panel);
     m_panel->setAllowedAreas(Qt::LeftDockWidgetArea |
                              Qt::RightDockWidgetArea);
+
+    //Configure the about action.
+    connect(m_about,
+            static_cast<void (QAction::*)(bool)>(&QAction::triggered),
+            [=]{About::showAbout(this);});
 #ifdef Q_OS_MACX
     setWindowTitle("Robot Emulator");
 #else
     setMenuBar(m_menuBar);
 #endif
+
+    retranslate();
+}
+
+void MainWindow::retranslate()
+{
+    m_about->setText(tr("About"));
 }

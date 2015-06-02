@@ -8,6 +8,8 @@ CONFIG += c++11
 win32
 {
     RC_FILE += win.rc
+    DISTFILES += \
+        win.rc
 }
 
 SOURCES += \
@@ -26,7 +28,8 @@ SOURCES += \
     groundrealtimepreviewer.cpp \
     groundglobal.cpp \
     polygoneditor.cpp \
-    robotmanagewidget.cpp
+    robotmanagewidget.cpp \
+    about.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -49,6 +52,3 @@ HEADERS += \
 
 RESOURCES += \
     res.qrc
-
-DISTFILES += \
-    win.rc
