@@ -80,7 +80,7 @@ GenerateGround::GenerateGround(QWidget *parent) :
                 {
                     //If there's one point which is not in the ground,
                     //Ask user to change the barracks.
-                    if(!ground.containsPoint(point, Qt::OddEvenFill))
+                    if(!ground.containsPoint(point, Qt::WindingFill))
                     {
                         //Set the tab to barracks editor.
                         m_tabManager->setCurrentWidget(m_barracksEditor);

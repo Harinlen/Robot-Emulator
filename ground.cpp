@@ -241,7 +241,7 @@ void Ground::onActionUpdateRobot()
             //Detect if the robot is in the border, if the robot is out of the
             //border.
             if(!m_border.containsPoint(robot->nextStep(),
-                                       Qt::OddEvenFill))
+                                       Qt::WindingFill))
             {
                 //Find the line of the robot should guard, the robot should
                 //guard the most recent line.
@@ -476,7 +476,7 @@ bool Ground::readGroundData(const QString &filePath)
             //Check the point is vaild or not.
             QPointF barracksPoint=QPointF(pointData.at(0).toDouble(),
                                           pointData.at(1).toDouble());
-            if(!border.containsPoint(barracksPoint, Qt::OddEvenFill))
+            if(!border.containsPoint(barracksPoint, Qt::WindingFill))
             {
                 return false;
             }
@@ -635,7 +635,7 @@ bool Ground::addRobot(Robot *robot)
     //Check the robot.
     //If the position of the robot is outside barracks, or there's already have
     //a robot, you can't add this robot.
-    if(!m_barracks.containsPoint(robot->pos(), Qt::OddEvenFill) ||
+    if(!m_barracks.containsPoint(robot->pos(), Qt::WindingFill) ||
             m_robotInitialPosition.contains(robot->pos()))
     {
         //Delete the robot.
@@ -711,7 +711,7 @@ void Ground::setBarracks(const QPolygonF &barracks)
         i!=barracks.end();
         ++i)
     {
-        if(!m_border.containsPoint(*i, Qt::OddEvenFill))
+        if(!m_border.containsPoint(*i, Qt::WindingFill))
         {
             return;
         }

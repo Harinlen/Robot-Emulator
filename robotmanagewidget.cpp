@@ -124,7 +124,7 @@ RobotManageWidget::RobotManageWidget(QWidget *parent) :
                     for(int i=0; i<positions.size(); i++)
                     {
                         if(!m_ground->barracks().containsPoint(positions.at(i),
-                                                               Qt::OddEvenFill))
+                                                               Qt::WindingFill))
                         {
                             QMessageBox::information(this,
                                                      tr("Invalid positions"),
