@@ -7,9 +7,14 @@ CONFIG += c++11
 #Win32 configure.
 win32
 {
-    RC_FILE += win.rc
     DISTFILES += \
         win.rc
+    RC_FILE += win.rc
+}
+
+macx
+{
+    ICON = icon.icns
 }
 
 SOURCES += \
@@ -48,7 +53,8 @@ HEADERS += \
     groundrealtimepreviewer.h \
     groundglobal.h \
     polygoneditor.h \
-    robotmanagewidget.h
+    robotmanagewidget.h \
+    about.h
 
 RESOURCES += \
     res.qrc
