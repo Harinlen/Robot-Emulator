@@ -52,3 +52,8 @@ void GroundGlobal::setBorderColor(const QColor &borderColor)
 {
     m_borderColor=borderColor;
 }
+
+void GroundGlobal::setBarracksColor(const QColor &barracksColor)
+{
+    m_barracksColor=barracksColor;
+}

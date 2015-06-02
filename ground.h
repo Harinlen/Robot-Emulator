@@ -143,6 +143,12 @@ private slots:
     bool onActionSaveAs();
     bool onActionClose();
 
+    void onActionChangeBorderColor();
+    void onActionChangeBarracksColor();
+    void onActionChangeRobotColor();
+    void onActionChangeDirectionLineColor();
+    void onActionChangeDetectRangeLineColor();
+
 private:
     inline void clearGroundData();
     inline bool readGroundData(const QString &filePath);
@@ -159,6 +165,11 @@ private:
         Save,
         SaveAs,
         Close,
+        BorderColor,
+        BarracksColor,
+        RobotColor,
+        RobotDirectionLineColor,
+        RobotDetectRangeColor,
         GroundActionsCount
     };
     QAction *m_actions[GroundActionsCount];

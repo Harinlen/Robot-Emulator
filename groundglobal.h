@@ -63,6 +63,12 @@ public slots:
      */
     void setBorderColor(const QColor &borderColor);
 
+    /*!
+     * \brief Sets the color of the barracks.
+     * \param barracksColor The prefer color of the barracks.
+     */
+    void setBarracksColor(const QColor &barracksColor);
+
 private:
     static GroundGlobal *m_instance;
     explicit GroundGlobal(QObject *parent = 0);

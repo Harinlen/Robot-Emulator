@@ -18,6 +18,7 @@
 #include <QPainter>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QColorDialog>
 #include <QFileInfo>
 #include <QTimer>
 #include <QFile>
@@ -66,16 +67,37 @@ Ground::Ground(QWidget *parent) :
     m_actions[SaveAs]->setShortcut(QKeySequence(Qt::CTRL+Qt::SHIFT+Qt::Key_S));
     m_actions[Close]->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_W));
 
-    connect(m_actions[New], static_cast<void (QAction::*)(bool)>(&QAction::triggered),
+    connect(m_actions[New],
+            static_cast<void (QAction::*)(bool)>(&QAction::triggered),
             [=]{onActionNew();});
-    connect(m_actions[Open], static_cast<void (QAction::*)(bool)>(&QAction::triggered),
+    connect(m_actions[Open],
+            static_cast<void (QAction::*)(bool)>(&QAction::triggered),
             [=]{onActionOpen();});
-    connect(m_actions[Save], static_cast<void (QAction::*)(bool)>(&QAction::triggered),
+    connect(m_actions[Save],
+            static_cast<void (QAction::*)(bool)>(&QAction::triggered),
             [=]{onActionSave();});
-    connect(m_actions[SaveAs], static_cast<void (QAction::*)(bool)>(&QAction::triggered),
+    connect(m_actions[SaveAs],
+            static_cast<void (QAction::*)(bool)>(&QAction::triggered),
             [=]{onActionSaveAs();});
-    connect(m_actions[Close], static_cast<void (QAction::*)(bool)>(&QAction::triggered),
+    connect(m_actions[Close],
+            static_cast<void (QAction::*)(bool)>(&QAction::triggered),
             [=]{onActionClose();});
+
+    connect(m_actions[BorderColor],
+            static_cast<void (QAction::*)(bool)>(&QAction::triggered),
+            [=]{onActionChangeBorderColor();});
+    connect(m_actions[BarracksColor],
+            static_cast<void (QAction::*)(bool)>(&QAction::triggered),
+            [=]{onActionChangeBarracksColor();});
+    connect(m_actions[RobotColor],
+            static_cast<void (QAction::*)(bool)>(&QAction::triggered),
+            [=]{onActionChangeRobotColor();});
+    connect(m_actions[RobotDirectionLineColor],
+            static_cast<void (QAction::*)(bool)>(&QAction::triggered),
+            [=]{onActionChangeDirectionLineColor();});
+    connect(m_actions[RobotDetectRangeColor],
+            static_cast<void (QAction::*)(bool)>(&QAction::triggered),
+            [=]{onActionChangeDetectRangeLineColor();});
 
     retranslate();
 
@@ -193,6 +215,12 @@ void Ground::retranslate()
     m_actions[Save]->setText(tr("Save"));
     m_actions[SaveAs]->setText(tr("Save As"));
     m_actions[Close]->setText(tr("Close"));
+
+    m_actions[BorderColor]->setText(tr("Set border color"));
+    m_actions[BarracksColor]->setText(tr("Set barracks color"));
+    m_actions[RobotColor]->setText(tr("Set robot color"));
+    m_actions[RobotDirectionLineColor]->setText(tr("Set robot direction line color"));
+    m_actions[RobotDetectRangeColor]->setText(tr("Set robot detect range color"));
 }
 
 void Ground::onActionUpdateRobot()
@@ -397,6 +425,101 @@ bool Ground::onActionClose()
     //Update the panel.
     update();
     return true;
+}
+
+void Ground::onActionChangeBorderColor()
+{
+    //Get the prefer color.
+    QColor preferBorderColor=
+            QColorDialog::getColor(m_groundGlobal->borderColor(),
+                                   this,
+                                   tr("Get border color"),
+                                   QColorDialog::ShowAlphaChannel |
+                                   QColorDialog::DontUseNativeDialog);
+    if(!preferBorderColor.isValid())
+    {
+        return;
+    }
+    //Set the color.
+    m_groundGlobal->setBorderColor(preferBorderColor);
+    //Update the panel.
+    update();
+}
+
+void Ground::onActionChangeBarracksColor()
+{
+    //Get the prefer color.
+    QColor preferBarracksColor=
+            QColorDialog::getColor(m_groundGlobal->barracksColor(),
+                                   this,
+                                   tr("Get barracks color"),
+                                   QColorDialog::ShowAlphaChannel |
+                                   QColorDialog::DontUseNativeDialog);
+    if(!preferBarracksColor.isValid())
+    {
+        return;
+    }
+    //Set the color.
+    m_groundGlobal->setBarracksColor(preferBarracksColor);
+    //Update the panel.
+    update();
+}
+
+void Ground::onActionChangeRobotColor()
+{
+    //Get the prefer color.
+    QColor preferRobotColor=
+            QColorDialog::getColor(Robot::robotColor(),
+                                   this,
+                                   tr("Get border color"),
+                                   QColorDialog::ShowAlphaChannel |
+                                   QColorDialog::DontUseNativeDialog);
+    if(!preferRobotColor.isValid())
+    {
+        return;
+    }
+    //Set the color.
+    Robot::setRobotColor(preferRobotColor);
+    //Update the panel.
+    update();
+}
+
+void Ground::onActionChangeDirectionLineColor()
+{
+    //Get the prefer color.
+    QColor preferDirectionLineColor=
+            QColorDialog::getColor(Robot::directionLineColor(),
+                                   this,
+                                   tr("Get border color"),
+                                   QColorDialog::ShowAlphaChannel |
+                                   QColorDialog::DontUseNativeDialog);
+    if(!preferDirectionLineColor.isValid())
+    {
+        return;
+    }
+    //Set the color.
+    Robot::setDirectionLineColor(preferDirectionLineColor);
+    //Update the panel.
+    update();
+}
+
+void Ground::onActionChangeDetectRangeLineColor()
+{
+    //Get the prefer color.
+    QColor preferDetectRadiusColor=
+            QColorDialog::getColor(Robot::detectRadiusColor(),
+                                   this,
+                                   tr("Get border color"),
+                                   QColorDialog::ShowAlphaChannel |
+                                   QColorDialog::DontUseNativeDialog);
+    if(!preferDetectRadiusColor.isValid())
+    {
+        return;
+    }
+    //Set the color.
+    Robot::setDetectRadiusColor(preferDetectRadiusColor);
+    //Update the panel.
+    update();
 }
 
 void Ground::clearGroundData()
@@ -670,6 +793,12 @@ void Ground::setMenuBar(MenuBar *menuBar)
     menuBar->addCategoryAction(MenuBar::File, m_actions[Save]);
     menuBar->addCategoryAction(MenuBar::File, m_actions[SaveAs]);
     menuBar->addCategoryAction(MenuBar::File, m_actions[Close]);
+
+    menuBar->addCategoryAction(MenuBar::Ground, m_actions[BorderColor]);
+    menuBar->addCategoryAction(MenuBar::Ground, m_actions[BarracksColor]);
+    menuBar->addCategoryAction(MenuBar::Ground, m_actions[RobotColor]);
+    menuBar->addCategoryAction(MenuBar::Ground, m_actions[RobotDirectionLineColor]);
+    menuBar->addCategoryAction(MenuBar::Ground, m_actions[RobotDetectRangeColor]);
 }
 
 void Ground::setGenerator(GenerateGroundBase *generator)
