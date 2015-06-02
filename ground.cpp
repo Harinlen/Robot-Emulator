@@ -26,6 +26,7 @@
 #include <QJsonArray>
 #include <QTextStream>
 #include <QJsonDocument>
+#include <QApplication>
 
 #include "robot.h"
 #include "menubar.h"
@@ -44,16 +45,16 @@ Ground::Ground(QWidget *parent) :
     m_fileName(QString()),
     m_changed(false),
     m_timeline(new QTimer(this)),
-    m_generator(nullptr)
+    m_generator(nullptr),
+    m_groundGlobal(GroundGlobal::instance()),
+    m_lastOpenFolder(QApplication::applicationDirPath()),
+    m_lastSaveFolder(QApplication::applicationDirPath())
 {
     setContentsMargins(0,0,0,0);
     //Configure the timer.
     m_timeline->setInterval(16); //This will update the image for 60fps.
     connect(m_timeline, &QTimer::timeout,
             this, &Ground::onActionUpdateRobot);
-
-    //Initial the ground global.
-    m_groundGlobal=GroundGlobal::instance();
 
     //Initial the actions.
     for(int i=0; i<GroundActionsCount; i++)
@@ -327,7 +328,9 @@ bool Ground::onActionOpen()
     }
     //Get the session file path.
     QString sessionFilePath=QFileDialog::getOpenFileName(this,
-                                                         tr("Open session"));
+                                                         tr("Open session"),
+                                                         m_lastOpenFolder,
+                                                         tr("Robot Emulator Session") + "(*.sss)");
     if(sessionFilePath.isEmpty())
     {
         return false;
@@ -357,7 +360,9 @@ bool Ground::onActionSaveAs()
 {
     //Get the new file path.
     QString preferFilePath=QFileDialog::getSaveFileName(this,
-                                                        tr("Save session"));
+                                                        tr("Save session"),
+                                                        m_lastSaveFolder,
+                                                        tr("Robot Emulator Session") + "(*.sss)");
     if(preferFilePath.isEmpty())
     {
         return false;
@@ -635,6 +640,7 @@ bool Ground::readGroundData(const QString &filePath)
         addRobots(robotList);
         //Change the file information and flags.
         QFileInfo sessionFileInfo(sessionFile);
+        m_lastOpenFolder=sessionFileInfo.absoluteDir().absolutePath();
         m_filePath=sessionFileInfo.absoluteFilePath();
         m_fileName=sessionFileInfo.fileName();
         m_changed=false;
@@ -693,6 +699,9 @@ bool Ground::writeGroundData()
         sessionStream << QJsonDocument(sessionObject).toJson() << flush;
         //Close the file.
         sessionFile.close();
+        //Get the file info.
+        QFileInfo sessionFileInfo(sessionFile);
+        m_lastSaveFolder=sessionFileInfo.absoluteDir().absolutePath();
         return true;
     }
     return false;

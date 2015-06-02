@@ -192,6 +192,9 @@ private:
 
     //Ground Global data.
     GroundGlobal *m_groundGlobal;
+
+    //Last folder.
+    QString m_lastOpenFolder, m_lastSaveFolder;
 };
 
 #endif // GROUND_H
