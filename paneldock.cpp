@@ -68,5 +68,6 @@ void PanelDock::showEvent(QShowEvent *event)
 
 void PanelDock::retranslate()
 {
+    setWindowTitle(tr("Timeline"));
     m_dockVisible->setText(tr("Control Dock"));
 }

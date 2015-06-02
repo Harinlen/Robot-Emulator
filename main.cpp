@@ -23,7 +23,7 @@
  * \brief Initial the main window of the application.
  * \param argc Argument count.
  * \param argv Argument values.
- * \return
+ * \return The result of the message loop.
  */
 int main(int argc, char *argv[])
 {

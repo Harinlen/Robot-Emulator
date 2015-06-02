@@ -4,6 +4,12 @@ QT += core gui widgets
 #Enabled c++ 11 syntax.
 CONFIG += c++11
 
+#Win32 configure.
+win32
+{
+    RC_FILE += win.rc
+}
+
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
@@ -40,3 +46,9 @@ HEADERS += \
     groundglobal.h \
     polygoneditor.h \
     robotmanagewidget.h
+
+RESOURCES += \
+    res.qrc
+
+DISTFILES += \
+    win.rc

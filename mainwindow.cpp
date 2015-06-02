@@ -34,7 +34,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_robotManagement(new RobotManagement(this)),
     m_groundGenerator(new GenerateGround(this))
 {
-    //Set the minimum size.
+    //Set properties.
+    setWindowIcon(QIcon("://res/icon.png"));
     setMinimumSize(500, 309);
     //Initial the scroll area.
     QScrollArea *groundArea=new QScrollArea(this);
