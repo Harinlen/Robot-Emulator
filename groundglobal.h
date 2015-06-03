@@ -54,7 +54,18 @@ public:
      */
     QColor referenceLineColor();
 
+    /*!
+     * \brief Get the color of the ground base.
+     * \return The QColor of the ground base.
+     */
+    QColor baseColor() const;
+
 signals:
+    /*!
+     * \brief When this signal is emitted, it will ask the container to change
+     * the base color.
+     */
+    void baseColorChanged(const QColor &color);
 
 public slots:
     /*!
@@ -69,10 +80,16 @@ public slots:
      */
     void setBarracksColor(const QColor &barracksColor);
 
+    /*!
+     * \brief Sets the color of the ground base.
+     * \param baseColor The prefer color of the ground.
+     */
+    void setBaseColor(const QColor &baseColor);
+
 private:
     static GroundGlobal *m_instance;
     explicit GroundGlobal(QObject *parent = 0);
-    QColor m_borderColor, m_barracksColor, m_referenceLineColor;
+    QColor m_borderColor, m_barracksColor, m_referenceLineColor, m_baseColor;
 };
 
 #endif // GROUNDGLOBAL_H

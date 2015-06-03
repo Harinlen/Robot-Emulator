@@ -21,7 +21,6 @@
 
 #include <QMainWindow>
 
-class QScrollArea;
 class Ground;
 class PanelDock;
 class MenuBar;

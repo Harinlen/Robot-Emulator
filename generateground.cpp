@@ -18,6 +18,7 @@
 #include <QBoxLayout>
 #include <QPushButton>
 #include <QTabWidget>
+#include <QGroupBox>
 #include <QMessageBox>
 
 #include "groundbase.h"
@@ -32,6 +33,7 @@ GenerateGround::GenerateGround(QWidget *parent) :
     m_borderEditor(new PolygonEditor(this)),
     m_barracksEditor(new PolygonEditor(this)),
     m_previewer(new GroundPreviewer(this)),
+    m_previewerGroup(new QGroupBox(this)),
     m_okay(new QPushButton(this)),
     m_cancel(new QPushButton(this))
 {
@@ -113,7 +115,12 @@ GenerateGround::GenerateGround(QWidget *parent) :
     setLayout(mainLayout);
 
     mainLayout->addWidget(m_tabManager, 1);
-    mainLayout->addWidget(m_previewer, 0, Qt::AlignCenter);
+    mainLayout->addWidget(m_previewerGroup, 0, Qt::AlignCenter);
+
+    QBoxLayout *groupLayout=new QBoxLayout(QBoxLayout::LeftToRight,
+                                           m_previewerGroup);
+    groupLayout->addWidget(m_previewer);
+    m_previewerGroup->setLayout(groupLayout);
 
     m_tabManager->addTab(m_borderEditor, "");
     m_tabManager->addTab(m_barracksEditor, "");
@@ -132,6 +139,8 @@ void GenerateGround::retranslate()
 {
     m_okay->setText(tr("Ok"));
     m_cancel->setText(tr("Cancel"));
+
+    m_previewerGroup->setTitle(tr("Previewer"));
 
     m_tabManager->setTabText(0, tr("Ground"));
     m_tabManager->setTabText(1, tr("Barracks"));

@@ -16,11 +16,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 #include <QBoxLayout>
-#include <QScrollArea>
 #include <QAction>
+#include <QScrollArea>
+#include <QScrollBar>
 
 #include "about.h"
+#include "gridwidget.h"
 #include "ground.h"
+#include "groundglobal.h"
 #include "paneldock.h"
 #include "menubar.h"
 #include "robotmanagement.h"
@@ -40,11 +43,80 @@ MainWindow::MainWindow(QWidget *parent) :
     //Set properties.
     setWindowIcon(QIcon("://res/icon.png"));
     setMinimumSize(500, 309);
+    //Initial the grid widget.
+    GridWidget *gridWidget=new GridWidget(this);
+    setCentralWidget(gridWidget);
     //Initial the scroll area.
     QScrollArea *groundArea=new QScrollArea(this);
-    setCentralWidget(groundArea);
+    gridWidget->setWidget(groundArea);
+    groundArea->setAutoFillBackground(true);
     groundArea->setAlignment(Qt::AlignCenter);
     groundArea->setWidget(m_ground);
+    groundArea->setFrameStyle(QFrame::NoFrame);
+    groundArea->verticalScrollBar()->setStyleSheet("QScrollBar:vertical {"
+                                                   "   border: 0px solid grey;"
+                                                   "   background: rgba(0, 0, 0, 0);"
+                                                   "   width: 8px;"
+                                                   "}"
+                                                   "QScrollBar::handle:vertical {"
+                                                   "   background: rgba(100, 100, 100);"
+                                                   "   min-height: 10px;"
+                                                   "   border-radius: 4px;"
+                                                   "}"
+                                                   "QScrollBar::add-line:vertical {"
+                                                   "   border: 0px solid grey;"
+                                                   "   background: rgba(0, 0, 0, 100);"
+                                                   "   height: 0px;"
+                                                   "   subcontrol-position: down;"
+                                                   "   subcontrol-origin: margin;"
+                                                   "}"
+                                                   "QScrollBar::sub-line:vertical {"
+                                                   "   border: 0px solid grey;"
+                                                   "   background: rgba(0, 0, 0, 100);"
+                                                   "   height: 0px;"
+                                                   "   subcontrol-position: up;"
+                                                   "   subcontrol-origin: margin;"
+                                                   "}");
+    groundArea->horizontalScrollBar()->setStyleSheet("QScrollBar:horizontal {"
+                                                     "   border: 0px solid grey;"
+                                                     "   background: rgba(0, 0, 0, 0);"
+                                                     "   height: 8px;"
+                                                     "}"
+                                                     "QScrollBar::handle:horizontal {"
+                                                     "   background: rgba(100, 100, 100);"
+                                                     "   min-height: 10px;"
+                                                     "   border-radius: 4px;"
+                                                     "}"
+                                                     "QScrollBar::add-line:horizontal {"
+                                                     "   border: 0px solid grey;"
+                                                     "   background: rgba(0, 0, 0, 100);"
+                                                     "   width: 0px;"
+                                                     "   subcontrol-position: down;"
+                                                     "   subcontrol-origin: margin;"
+                                                     "}"
+                                                     "QScrollBar::sub-line:horizontal {"
+                                                     "   border: 0px solid grey;"
+                                                     "   background: rgba(0, 0, 0, 100);"
+                                                     "   width: 0px;"
+                                                     "   subcontrol-position: up;"
+                                                     "   subcontrol-origin: margin;"
+                                                     "}");
+
+    //Update the palette of ground area.
+    QPalette pal=groundArea->palette();
+    pal.setColor(QPalette::Window, QColor(0,0,0,0));
+    groundArea->setPalette(pal);
+    pal=gridWidget->palette();
+    pal.setColor(QPalette::Window, GroundGlobal::instance()->baseColor());
+    gridWidget->setPalette(pal);
+    //Link the color changed signal.
+    connect(GroundGlobal::instance(), &GroundGlobal::baseColorChanged,
+            [=](const QColor &color)
+            {
+                QPalette pal=gridWidget->palette();
+                pal.setColor(QPalette::Window, color);
+                gridWidget->setPalette(pal);
+            });
 
     //Set the ground generator.
     m_ground->setGenerator(m_groundGenerator);

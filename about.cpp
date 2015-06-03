@@ -31,6 +31,7 @@ void About::showAbout(QWidget *parent)
 About::About(QWidget *parent) :
     QDialog(parent)
 {
+    setWindowTitle(tr("About Robot Emulator"));
     //Set the main layout.
     QBoxLayout *mainLayout=new QBoxLayout(QBoxLayout::TopToBottom,
                                           this);
@@ -40,7 +41,7 @@ About::About(QWidget *parent) :
     icon->setPixmap(QPixmap("://res/icon.png"));
     icon->setFixedSize(256, 256);
     icon->setScaledContents(true);
-    mainLayout->addWidget(icon, 1, Qt::AlignHCenter);
+    mainLayout->addWidget(icon, 1, Qt::AlignCenter);
     mainLayout->addWidget(new QLabel(tr("Robot Emulator"), this),
                           0,
                           Qt::AlignHCenter);

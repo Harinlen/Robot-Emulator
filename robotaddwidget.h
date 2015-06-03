@@ -25,6 +25,7 @@ class QPushButton;
 class QSpinBox;
 class QSlider;
 class QLabel;
+class QGroupBox;
 class GroundBase;
 /*!
  * \brief The RobotAddWidget class is a widget for user to generate a robot in a
@@ -100,6 +101,7 @@ private slots:
     void onActionParameterChange();
 
 private:
+    QGroupBox *m_editArea;
     QPushButton *m_okay, *m_cancel;
     QLabel *m_labels[3];
     QSpinBox *m_xData, *m_yData;

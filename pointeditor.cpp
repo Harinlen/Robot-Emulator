@@ -87,6 +87,8 @@ PointEditor::PointEditor(QWidget *parent) :
 
     //Initial the edit area layout.
     QGridLayout *editAreaLayout=new QGridLayout(mainLayout->widget());
+    editAreaLayout->setContentsMargins(0,0,0,0);
+    editAreaLayout->setVerticalSpacing(0);
     mainLayout->addLayout(editAreaLayout, 1);
 
     editAreaLayout->addWidget(new QLabel("X:"), 0, 0, 1, 1, Qt::AlignRight);

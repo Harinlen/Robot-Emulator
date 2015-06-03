@@ -21,6 +21,7 @@
 
 #include "generategroundbase.h"
 
+class QGroupBox;
 class QPushButton;
 class QTabWidget;
 class PolygonEditor;
@@ -75,6 +76,7 @@ private:
     QTabWidget *m_tabManager;
     PolygonEditor *m_borderEditor, *m_barracksEditor;
     GroundPreviewer *m_previewer;
+    QGroupBox *m_previewerGroup;
     QPushButton *m_okay, *m_cancel;
 
     QPolygonF m_border, m_barracks;

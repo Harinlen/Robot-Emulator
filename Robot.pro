@@ -34,7 +34,9 @@ SOURCES += \
     groundglobal.cpp \
     polygoneditor.cpp \
     robotmanagewidget.cpp \
-    about.cpp
+    about.cpp \
+    gridwidget.cpp \
+    robotbase.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -54,7 +56,9 @@ HEADERS += \
     groundglobal.h \
     polygoneditor.h \
     robotmanagewidget.h \
-    about.h
+    about.h \
+    gridwidget.h \
+    robotbase.h
 
 RESOURCES += \
     res.qrc

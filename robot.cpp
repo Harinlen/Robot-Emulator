@@ -15,14 +15,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-#include <QPainter>
-
 #include "robot.h"
 
 #include <QDebug>
 
 Robot::Robot() :
-    m_angle(0.0),
+    RobotBase(),
     m_hasGuardianLine(false),
     m_guardianLine(QPointF(0,0), QPointF(0,0)),
     m_toP1Distance(0.0),
@@ -41,115 +39,6 @@ Robot::Robot(qreal x, qreal y) :
     Robot()
 {
     setPos(x, y);
-}
-
-QPointF Robot::pos() const
-{
-    return m_pos;
-}
-
-void Robot::setPos(const QPointF &pos)
-{
-    m_pos = pos;
-}
-
-void Robot::paintRobot(QPainter *painter)
-{
-    //Draw the robot.
-    painter->setPen(m_robotColor);
-    painter->drawEllipse(m_pos, m_robotSize, m_robotSize);
-}
-
-void Robot::paintRobotParameter(QPainter *painter)
-{
-    //Draw the direction of the robot.
-    QLineF directionLine(m_pos, m_pos+QPointF(m_detectRadius, 0));
-    directionLine.setAngle(m_angle);
-    painter->setPen(m_directionLineColor);
-    painter->drawLine(directionLine);
-
-    //Draw the detect radius.
-    painter->setPen(m_detectRadiusColor);
-    painter->drawEllipse(m_pos, m_detectRadius, m_detectRadius);
-}
-
-int Robot::m_robotSize=2;
-
-int Robot::robotSize()
-{
-    return m_robotSize;
-}
-
-void Robot::setRobotSize(int robotSize)
-{
-    m_robotSize = robotSize;
-}
-
-int Robot::m_detectRadius=20;
-
-int Robot::detectRadius()
-{
-    return m_detectRadius;
-}
-
-void Robot::setDetectRadius(int detectRadius)
-{
-    m_detectRadius = detectRadius;
-}
-
-QColor Robot::m_robotColor=QColor(255,0,255);
-
-void Robot::setRobotColor(const QColor &robotColor)
-{
-    m_robotColor=robotColor;
-}
-
-QColor Robot::robotColor()
-{
-    return m_robotColor;
-}
-
-QColor Robot::m_detectRadiusColor=QColor(127,0,255);
-
-QColor Robot::detectRadiusColor()
-{
-    return m_detectRadiusColor;
-}
-
-void Robot::setDetectRadiusColor(const QColor &detectRadiusColor)
-{
-    m_detectRadiusColor = detectRadiusColor;
-}
-
-qreal Robot::angle() const
-{
-    return m_angle;
-}
-
-void Robot::setAngle(const qreal &angle)
-{
-    m_angle = angle;
-    //Change the angle.
-    while(m_angle>360.0)
-    {
-        m_angle-=360.0;
-    }
-    while(m_angle<0.0)
-    {
-        m_angle+=360.0;
-    }
-}
-
-QColor Robot::m_directionLineColor=QColor(127, 127, 0);
-
-QColor Robot::directionLineColor()
-{
-    return m_directionLineColor;
-}
-
-void Robot::setDirectionLineColor(const QColor &detectLineColor)
-{
-    m_directionLineColor = detectLineColor;
 }
 
 void Robot::addToDetectList(Robot *robot)
@@ -453,4 +342,3 @@ void Robot::moveToOppositeDirection()
         m_angle=m_guardianLine.angle();
     }
 }
-

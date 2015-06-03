@@ -50,9 +50,12 @@ Ground::Ground(QWidget *parent) :
     m_lastOpenFolder(QApplication::applicationDirPath()),
     m_lastSaveFolder(QApplication::applicationDirPath())
 {
+    //Set parameters.
     setContentsMargins(0,0,0,0);
+    //Initial robots.
+    Robot::initialRobotPatameters();
     //Configure the timer.
-    m_timeline->setInterval(16); //This will update the image for 60fps.
+    m_timeline->setInterval(6); //This will update the image for 60fps.
     connect(m_timeline, &QTimer::timeout,
             this, &Ground::onActionUpdateRobot);
 
@@ -67,6 +70,11 @@ Ground::Ground(QWidget *parent) :
     m_actions[Save]->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_S));
     m_actions[SaveAs]->setShortcut(QKeySequence(Qt::CTRL+Qt::SHIFT+Qt::Key_S));
     m_actions[Close]->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_W));
+
+    //Disable the save, save as and close as default.
+    m_actions[Save]->setEnabled(false);
+    m_actions[SaveAs]->setEnabled(false);
+    m_actions[Close]->setEnabled(false);
 
     connect(m_actions[New],
             static_cast<void (QAction::*)(bool)>(&QAction::triggered),
@@ -181,30 +189,36 @@ void Ground::paintEvent(QPaintEvent *event)
     painter.setRenderHints(QPainter::Antialiasing |
                            QPainter::TextAntialiasing |
                            QPainter::SmoothPixmapTransform, true);
+    //Set translation.
     painter.translate(Robot::detectRadius(), Robot::detectRadius());
-    //Draw the reference line.
-    painter.setPen(m_groundGlobal->referenceLineColor());
-    painter.setBrush(QColor(0,0,0,0));
-    for(int i=0; i<=height(); i+=30)
-    {
-        painter.drawLine(0, i, width(), i);
-    }
-    for(int i=0; i<=width(); i+=30)
-    {
-        painter.drawLine(i, 0, i, height());
-    }
     //Draw the border.
     painter.setPen(m_groundGlobal->borderColor());
+    QBrush borderBrush(Qt::DiagCrossPattern);
+    borderBrush.setColor(m_groundGlobal->borderColor());
+    painter.setBrush(borderBrush);
     painter.drawPolygon(m_border);
 
     //Draw the barracks.
     painter.setPen(m_groundGlobal->barracksColor());
+    painter.setBrush(QColor(0,0,0,0));
     painter.drawPolygon(m_barracks);
 
     //Draw all the robot.
+    //First, draw the detect area.
+    painter.setPen(Qt::NoPen);
+    for(Robot *robot : m_robotList)
+    {
+        robot->paintRobotDetectArea(&painter);
+    }
+    //Then, draw the parameter.
+    painter.setPen(Robot::directionLineColor());
     for(Robot *robot : m_robotList)
     {
         robot->paintRobotParameter(&painter);
+    }
+    //Finally, draw the robot.
+    for(Robot *robot : m_robotList)
+    {
         robot->paintRobot(&painter);
     }
 }
@@ -294,7 +308,7 @@ void Ground::onActionUpdateRobot()
 void Ground::onActionNew()
 {
     //Stop the time line.
-    m_timeline->stop();
+    pause();
     //Close the current file.
     if(!onActionClose())
     {
@@ -319,7 +333,7 @@ void Ground::onActionNew()
 bool Ground::onActionOpen()
 {
     //Stop the time line.
-    m_timeline->stop();
+    pause();
 
     //Close the current file.
     if(!onActionClose())
@@ -378,8 +392,8 @@ bool Ground::onActionSaveAs()
 
 bool Ground::onActionClose()
 {
-    //Stop the time line.
-    m_timeline->stop();
+    //Stop the timeline.
+    pause();
 
     //Check if the current state is already close.
     if(m_filePath.isEmpty() && !m_changed)
@@ -427,6 +441,10 @@ bool Ground::onActionClose()
     m_filePath=QString();
     m_fileName=QString();
     m_changed=false;
+    //Disable save and save as.
+    m_actions[Save]->setEnabled(false);
+    m_actions[SaveAs]->setEnabled(false);
+    m_actions[Close]->setEnabled(false);
     //Update the panel.
     update();
     return true;
@@ -646,6 +664,10 @@ bool Ground::readGroundData(const QString &filePath)
         m_changed=false;
         //Update the image.
         update();
+        //Enabled save and save as actions.
+        m_actions[Save]->setEnabled(true);
+        m_actions[SaveAs]->setEnabled(true);
+        m_actions[Close]->setEnabled(true);
         return true;
     }
     return false;

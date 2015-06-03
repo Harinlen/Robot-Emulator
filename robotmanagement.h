@@ -22,6 +22,7 @@
 #include <QDialog>
 
 class QStackedLayout;
+class QGroupBox;
 class GroundBase;
 class MenuBar;
 class RobotAddWidget;
@@ -86,6 +87,7 @@ private:
     };
     QAction *m_actions[RobotManagementActionsCount];
 
+    QGroupBox *m_previewGroup;
     GroundBase *m_ground;
     GroundRealtimePreviewer *m_groundPreview;
     QStackedLayout *m_stackLayout;

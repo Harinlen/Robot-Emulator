@@ -21,6 +21,7 @@
 #include <QGridLayout>
 #include <QMessageBox>
 #include <QTreeView>
+#include <QGroupBox>
 
 #include "robot.h"
 #include "groundbase.h"
@@ -36,11 +37,13 @@ RobotManageWidget::RobotManageWidget(QWidget *parent) :
     m_deletePoint(new QPushButton(this)),
     m_robotInitialDataView(new QTreeView(this)),
     m_robotInitialDataModel(new QStandardItemModel(this)),
-    m_ground(nullptr)
+    m_ground(nullptr),
+    m_manageBox(new QGroupBox(this))
 {
     //Set the palette.
     QPalette pal=m_deletePoint->palette();
     pal.setColor(QPalette::Button, QColor(255,0,0));
+    pal.setColor(QPalette::ButtonText, QColor(255,255,255));
     m_deletePoint->setPalette(pal);
 
     //Configure robot list.
@@ -77,12 +80,14 @@ RobotManageWidget::RobotManageWidget(QWidget *parent) :
     mainLayout->setContentsMargins(0,0,0,0);
     setLayout(mainLayout);
 
+
     //Generate the editor layout.
     QBoxLayout *robotViewLayout=new QBoxLayout(QBoxLayout::TopToBottom,
                                          mainLayout->widget());
+    m_manageBox->setLayout(robotViewLayout);
     robotViewLayout->addWidget(m_robotInitialDataView, 1);
     robotViewLayout->addWidget(m_deletePoint);
-    mainLayout->addLayout(robotViewLayout, 1);
+    mainLayout->addWidget(m_manageBox, 1);
 
     //Generate the button layout.
     QBoxLayout *buttonLayout=new QBoxLayout(QBoxLayout::TopToBottom,
@@ -160,6 +165,8 @@ void RobotManageWidget::retranslate()
     m_okay->setText(tr("Ok"));
     m_cancel->setText(tr("Cancel"));
     m_deletePoint->setText(tr("Delete"));
+
+    m_manageBox->setTitle(tr("Robots"));
 
     updateHeader();
 }

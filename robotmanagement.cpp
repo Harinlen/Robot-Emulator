@@ -17,6 +17,7 @@
  */
 #include <QStackedLayout>
 #include <QMessageBox>
+#include <QGroupBox>
 
 #include "ground.h"
 #include "robot.h"
@@ -31,6 +32,7 @@
 
 RobotManagement::RobotManagement(QWidget *parent) :
     QDialog(parent),
+    m_previewGroup(new QGroupBox(this)),
     m_ground(nullptr),
     m_groundPreview(new GroundRealtimePreviewer(this)),
     m_stackLayout(new QStackedLayout),
@@ -40,7 +42,11 @@ RobotManagement::RobotManagement(QWidget *parent) :
     QBoxLayout *mainLayout=new QBoxLayout(QBoxLayout::LeftToRight,
                                           this);
     setLayout(mainLayout);
-    mainLayout->addWidget(m_groundPreview);
+    QBoxLayout *previewLayout=new QBoxLayout(QBoxLayout::LeftToRight,
+                                             m_previewGroup);
+    previewLayout->addWidget(m_groundPreview);
+    m_previewGroup->setLayout(previewLayout);
+    mainLayout->addWidget(m_previewGroup);
     mainLayout->addLayout(m_stackLayout, 1);
     //If we are using Mac OS X, using the sheet window flag.
 #ifdef Q_OS_MACX
@@ -176,6 +182,8 @@ void RobotManagement::retranslate()
 {
     m_actions[AddRobot]->setText(tr("Add robot"));
     m_actions[ManageRobot]->setText(tr("Manage robots"));
+
+    m_previewGroup->setTitle(tr("Previewer"));
 }
 
 void RobotManagement::onActionAddRobot(const QPointF &position,

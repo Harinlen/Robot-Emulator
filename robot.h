@@ -19,10 +19,10 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 
-#include <QPointF>
 #include <QLineF>
 #include <QList>
-#include <QColor>
+
+#include "robotbase.h"
 
 class QPainter;
 /*!
@@ -32,7 +32,7 @@ class QPainter;
  * You have to recover the memory yourself. It don't have a parent. \n
  * This is not a QObject for memory reduce, so there's no signal and slots.
  */
-class Robot
+class Robot : public RobotBase
 {
 public:
     /*!
@@ -53,118 +53,6 @@ public:
      * \param y The start y position of the robot.
      */
     Robot(qreal x, qreal y);
-
-    /*!
-     * \brief The position of the robot.
-     * \return The QPointF format robot position.
-     */
-    QPointF pos() const;
-
-    /*!
-     * \brief Set the position of a robot.
-     * \param pos The position of the robot.
-     */
-    void setPos(const QPointF &pos);
-
-    /*!
-     * \brief This is an overloaded function.\n
-     * Set the position of a robot.
-     * \param x The x position of the robot.
-     * \param y The y position of the robot.
-     */
-    inline void setPos(qreal x, qreal y)
-    {
-        setPos(QPointF(x, y));
-    }
-
-    /*!
-     * \brief Paint the robot with the specific painter.
-     * \param painter The painting painter.
-     */
-    void paintRobot(QPainter *painter);
-
-    /*!
-     * \brief Paint the parameter of the robot with the specific painter.\n
-     * The parameters of a robots include the range and angle.
-     * \param painter The painting painter.
-     */
-    void paintRobotParameter(QPainter *painter);
-
-    /*!
-     * \brief Get the size of all the robots.
-     * \return The size of all robots.
-     */
-    static int robotSize();
-
-    /*!
-     * \brief Change the size of all the robots.
-     * \param robotSize The new size of all robots.
-     */
-    static void setRobotSize(int robotSize);
-
-    /*!
-     * \brief Get the detect radius of all the robots.
-     * \return The detect radius of all robots.
-     */
-    static int detectRadius();
-
-    /*!
-     * \brief Change all the detect radius of all the robots.
-     * \param detectRadius The new detect radius of all the robots.
-     */
-    static void setDetectRadius(int detectRadius);
-
-    /*!
-     * \brief Sets the color of the robot.
-     * \param robotColor The prefer color of all robots.
-     */
-    static void setRobotColor(const QColor &robotColor);
-
-    /*!
-     * \brief Get the color of all robots.
-     * \return The QColor of the robots.
-     */
-    static QColor robotColor();
-
-    /*!
-     * \brief Get the color of the detection radius border of the robots.
-     * \return The QColor of the detection radius border of the robots.
-     */
-    static QColor detectRadiusColor();
-
-    /*!
-     * \brief Change the color of the robot detection radius border.
-     * \param robotColor The prefer color of all the detection radius border of
-     * robots.
-     */
-    static void setDetectRadiusColor(const QColor &detectRadiusColor);
-
-    /*!
-     * \brief Get the moving angle of the robot. \n
-     * The default angle of the robot is 0 (3'o clock position).
-     * \return The angle of the robot.
-     */
-    qreal angle() const;
-
-    /*!
-     * \brief Change the moving angle of the robot, the value should be ranged
-     * from 0 degrees to 360 degrees. The program will automatically change the
-     * value.
-     * \param angle The prefer angle of the robot.
-     */
-    void setAngle(const qreal &angle);
-
-    /*!
-     * \brief Get the color the all the direction line color of the robots.
-     * \return The color of the direction line.
-     */
-    static QColor directionLineColor();
-
-    /*!
-     * \brief Change the color of the direction line.
-     * \param directionLineColor The direction line color.
-     */
-    static void setDirectionLineColor(const QColor &directionLineColor);
 
     /*!
      * \brief Add a detected robot to the detection list. \n
@@ -268,6 +156,11 @@ public:
         return QLineF(p1, p2).length();
     }
 
+    /*!
+     * \brief This will return the detected list is empty or not. It's used to
+     * reset the robot.
+     * \return If the list is empty, return true.
+     */
     bool isDetectedListEmpty()
     {
         return m_detectedRobotList.isEmpty();
@@ -290,13 +183,8 @@ private:
             return status1.distance < status2.distance;
         }
     };
-
-    static int m_robotSize, m_detectRadius;
-    QPointF m_pos;
+    //Robot list information.
     QList<Robot *> m_detectedRobotList;
-
-    static QColor m_robotColor, m_detectRadiusColor, m_directionLineColor;
-    qreal m_angle;
 
     //Gardian line information
     bool m_hasGuardianLine;

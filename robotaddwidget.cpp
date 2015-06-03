@@ -19,6 +19,7 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QLabel>
+#include <QGroupBox>
 #include <QSlider>
 #include <QRegExpValidator>
 
@@ -26,6 +27,7 @@
 
 RobotAddWidget::RobotAddWidget(QWidget *parent) :
     QWidget(parent),
+    m_editArea(new QGroupBox(this)),
     m_okay(new QPushButton(this)),
     m_cancel(new QPushButton(this)),
     m_xData(new QSpinBox(this)),
@@ -60,7 +62,8 @@ RobotAddWidget::RobotAddWidget(QWidget *parent) :
     QBoxLayout *controlLayout=new QBoxLayout(QBoxLayout::TopToBottom,
                                              mainLayout->widget());
     controlLayout->setSpacing(2);
-    mainLayout->addLayout(controlLayout);
+    m_editArea->setLayout(controlLayout);
+    mainLayout->addWidget(m_editArea, 1);
 
     QBoxLayout *positionLayout=new QBoxLayout(QBoxLayout::LeftToRight,
                                               mainLayout->widget());
@@ -140,6 +143,8 @@ void RobotAddWidget::retranslate()
     m_labels[0]->setText(tr("X:"));
     m_labels[1]->setText(tr("Y:"));
     m_labels[2]->setText(tr("Angle:"));
+
+    m_editArea->setTitle(tr("Robot Initial Status"));
 }
 
 void RobotAddWidget::onActionParameterChange()

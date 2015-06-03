@@ -15,30 +15,31 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-#include <QStyleFactory>
 
-#include "mainwindow.h"
+#ifndef GRIDWIDGET_H
+#define GRIDWIDGET_H
 
-#include <QApplication>
+#include <QWidget>
 
-/*!
- * \brief Initial the main window of the application.
- * \param argc Argument count.
- * \param argv Argument values.
- * \return The result of the message loop.
- */
-int main(int argc, char *argv[])
+class GridWidget : public QWidget
 {
-    QApplication app(argc, argv);
-    //Set application information.
-    QApplication::setApplicationName("Robot Emulator");
-    QApplication::setApplicationDisplayName("Robot Emulator");
-    QApplication::setApplicationVersion("1.0");
-    //Set style.
-    QApplication::setStyle(QStyleFactory::create("fusion"));
-    //Conrtruct main window.
-    MainWindow mainWindow;
-    mainWindow.show();
-    //Expand the event loop.
-    return app.exec();
-}
+    Q_OBJECT
+public:
+    explicit GridWidget(QWidget *parent = 0);
+
+    QWidget *widget() const;
+    void setWidget(QWidget *widget);
+
+signals:
+
+public slots:
+
+protected:
+    void resizeEvent(QResizeEvent *event);
+    void paintEvent(QPaintEvent *event);
+
+private:
+    QWidget *m_widget;
+};
+
+#endif // GRIDWIDGET_H

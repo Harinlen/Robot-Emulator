@@ -156,9 +156,11 @@ void PolygonEditor::addPoint(const QPointF &point)
     {
         m_groundData->insertRow(m_groundPoints->currentIndex().row()+1,
                                 pointRow);
+        m_groundPoints->setCurrentIndex(pointRow.at(0)->index());
     }
     else
     {
         m_groundData->appendRow(pointRow);
+        m_groundPoints->setCurrentIndex(pointRow.at(0)->index());
     }
 }

@@ -25,6 +25,7 @@ class QTreeView;
 class QPushButton;
 class QStandardItemModel;
 class QGridLayout;
+class QGroupBox;
 class Robot;
 class GroundBase;
 /*!
@@ -133,6 +134,7 @@ private:
     QStandardItemModel *m_robotInitialDataModel;
     QList<Robot *> m_robotList;
     GroundBase *m_ground;
+    QGroupBox *m_manageBox;
 };
 
 #endif // ROBOTMANAGEWIDGET_H
