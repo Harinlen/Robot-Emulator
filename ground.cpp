@@ -224,8 +224,12 @@ void Ground::paintEvent(QPaintEvent *event)
 
     //Draw the barracks.
     painter.setPen(m_groundGlobal->barracksColor());
-    painter.setBrush(QColor(0,0,0,0));
+    borderBrush.setColor(m_groundGlobal->barracksColor());
+    borderBrush.setStyle(Qt::DiagCrossPattern);
+    painter.setOpacity(0.5);
+    painter.setBrush(borderBrush);
     painter.drawPolygon(m_barracks);
+    painter.setOpacity(1.0);
 
     //Draw all the robot.
     if(m_robotList.isEmpty())
