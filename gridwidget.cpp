@@ -38,6 +38,16 @@ void GridWidget::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     painter.setPen(GroundGlobal::instance()->referenceLineColor());
     painter.setBrush(QColor(0,0,0,0));
+    painter.setOpacity(0.3);
+    for(int i=0; i<width(); i+=m_gridStep)
+    {
+        painter.drawLine(i, 0, i, height());
+    }
+    for(int i=0; i<height(); i+=m_gridStep)
+    {
+        painter.drawLine(0, i, width(), i);
+    }
+    painter.setOpacity(1.0);
     QFont textFont=font();
     textFont.setPixelSize(4);
     painter.setFont(textFont);
