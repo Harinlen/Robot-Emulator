@@ -21,6 +21,7 @@
 
 #include "groundpreviewer.h"
 
+class Robot;
 class GroundBase;
 /*!
  * \brief The GroundRealtimePreview class is a advanced ground preview. It can
@@ -36,6 +37,10 @@ public:
      * \param parent The parent widget.
      */
     explicit GroundRealtimePreviewer(QWidget *parent = 0);
+
+    /*!
+     * \brief Destory the GroundRealtimePreviewer.
+     */
     ~GroundRealtimePreviewer();
 
     /*!

@@ -15,6 +15,8 @@ win32
 macx
 {
     ICON = icon.icns
+    QMAKE_CXXFLAGS -= -O2
+    QMAKE_CXXFLAGS += -O3
 }
 
 SOURCES += \
@@ -58,7 +60,8 @@ HEADERS += \
     robotmanagewidget.h \
     about.h \
     gridwidget.h \
-    robotbase.h
+    robotbase.h \
+    mainpage.h
 
 RESOURCES += \
     res.qrc

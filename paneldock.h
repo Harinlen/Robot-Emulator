@@ -24,6 +24,9 @@
 class Panel;
 class GroundBase;
 class MenuBar;
+/*!
+ * \brief The PanelDock class provide a dock which containes a Panel class.
+ */
 class PanelDock : public QDockWidget
 {
     Q_OBJECT
@@ -42,6 +45,7 @@ public slots:
      * \param ground The controlled ground class.
      */
     void setGround(GroundBase *ground);
+
     /*!
      * \brief The proxy set function of the panel widget.
      * \param menuBar The menu bar.

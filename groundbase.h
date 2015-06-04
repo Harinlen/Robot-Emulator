@@ -104,9 +104,9 @@ public:
 
     /*!
      * \brief Set the robots information to the given parameters, remove the
-     * \param robots
-     * \param initialPosition
-     * \param initialAngle
+     * \param robots The robot list.
+     * \param initialPosition The initial position of the robots.
+     * \param initialAngle The initial angle of the robots.
      */
     virtual void syncRobotData(const QList<Robot *> &robots,
                                const QList<QPointF> &initialPosition,
@@ -125,6 +125,22 @@ signals:
     void barracksChanged();
 
 public slots:
+    /*!
+     * \brief Change the time line speed of the ground. The parameter speed
+     * should be one of the following data:\n
+     *  Format: Value - Description (Update Interval, Maximum Frame Per Second)\n
+     *  * 64 - A quarter speed (64ms, 15fps) \n
+     *  * 32 - A half speed (32ms, 30 fps) \n
+     *  * 16 - Original speed (16ms, 60 fps) \n
+     *  * 8 - Double speed (8ms, 120 fps) \n
+     *  * 5 - Triple speed (5ms, 180 fps) \n
+     *  * 4 - Quadra speed. (4ms, 240fps) \n
+     *  * 3 - Panta speed. (3ms, 300fps) \n
+     *  * 2 - Hexa speed. (2ms, 480fps)
+     * \param speedMeter The speed interval.
+     */
+    virtual void setSpeed(const int &speed)=0;
+
     /*!
      * \brief Sets the border for the ground to border. \n
      * The border must be at least a triangle, if it's not a more complex

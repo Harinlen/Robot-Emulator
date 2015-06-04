@@ -41,6 +41,8 @@ Ground::Ground(QWidget *parent) :
     GroundBase(parent),
     m_border(QPolygonF()),
     m_barracks(QPolygonF()),
+    m_showDirection(true),
+    m_showDetectRadius(true),
     m_filePath(QString()),
     m_fileName(QString()),
     m_changed(false),
@@ -55,7 +57,7 @@ Ground::Ground(QWidget *parent) :
     //Initial robots.
     Robot::initialRobotPatameters();
     //Configure the timer.
-    m_timeline->setInterval(6); //This will update the image for 60fps.
+    setSpeed(16); //This will update the image for 60fps.
     connect(m_timeline, &QTimer::timeout,
             this, &Ground::onActionUpdateRobot);
 
@@ -64,6 +66,11 @@ Ground::Ground(QWidget *parent) :
     {
         m_actions[i]=new QAction(this);
     }
+    m_actions[ShowDetectRange]->setCheckable(true);
+    m_actions[ShowDetectRange]->setChecked(true);
+
+    m_actions[ShowDirection]->setCheckable(true);
+    m_actions[ShowDirection]->setChecked(true);
     //Set the key sequence.
     m_actions[New]->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_N));
     m_actions[Open]->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_O));
@@ -107,6 +114,13 @@ Ground::Ground(QWidget *parent) :
     connect(m_actions[RobotDetectRangeColor],
             static_cast<void (QAction::*)(bool)>(&QAction::triggered),
             [=]{onActionChangeDetectRangeLineColor();});
+
+    connect(m_actions[ShowDetectRange],
+            static_cast<void (QAction::*)(bool)>(&QAction::triggered),
+            [=]{update();});
+    connect(m_actions[ShowDirection],
+            static_cast<void (QAction::*)(bool)>(&QAction::triggered),
+            [=]{update();});
 
     retranslate();
 
@@ -191,9 +205,16 @@ void Ground::paintEvent(QPaintEvent *event)
                            QPainter::SmoothPixmapTransform, true);
     //Set translation.
     painter.translate(Robot::detectRadius(), Robot::detectRadius());
-    //Draw the border.
+    //Draw the ground.
+    //Paint the ground base.
+    painter.setPen(Qt::NoPen);
+    QBrush borderBrush(Qt::SolidPattern);
+    borderBrush.setColor(m_groundGlobal->groundColor());
+    painter.setBrush(borderBrush);
+    painter.drawPolygon(m_border);
+    //Paint the ground border.
     painter.setPen(m_groundGlobal->borderColor());
-    QBrush borderBrush(Qt::DiagCrossPattern);
+    borderBrush.setStyle(Qt::FDiagPattern);
     borderBrush.setColor(m_groundGlobal->borderColor());
     painter.setBrush(borderBrush);
     painter.drawPolygon(m_border);
@@ -204,19 +225,34 @@ void Ground::paintEvent(QPaintEvent *event)
     painter.drawPolygon(m_barracks);
 
     //Draw all the robot.
-    //First, draw the detect area.
-    painter.setPen(Qt::NoPen);
-    for(Robot *robot : m_robotList)
+    if(m_robotList.isEmpty())
     {
-        robot->paintRobotDetectArea(&painter);
+        return;
+    }
+    //First, draw the detect area.
+    if(m_actions[ShowDetectRange]->isChecked())
+    {
+        painter.setPen(Qt::NoPen);
+        for(Robot *robot : m_robotList)
+        {
+            robot->paintRobotDetectArea(&painter);
+        }
     }
     //Then, draw the parameter.
-    painter.setPen(Robot::directionLineColor());
-    for(Robot *robot : m_robotList)
+    if(m_actions[ShowDirection]->isChecked())
     {
-        robot->paintRobotParameter(&painter);
+        painter.setPen(Robot::directionLineColor());
+        painter.setBrush(Qt::NoBrush);
+        for(Robot *robot : m_robotList)
+        {
+            robot->paintRobotParameter(&painter);
+        }
     }
     //Finally, draw the robot.
+    QPen robotPen(Robot::robotBorder());
+    robotPen.setWidth(2);
+    painter.setPen(robotPen);
+    painter.setBrush(Robot::robotColor());
     for(Robot *robot : m_robotList)
     {
         robot->paintRobot(&painter);
@@ -236,6 +272,8 @@ void Ground::retranslate()
     m_actions[RobotColor]->setText(tr("Set robot color"));
     m_actions[RobotDirectionLineColor]->setText(tr("Set robot direction line color"));
     m_actions[RobotDetectRangeColor]->setText(tr("Set robot detect range color"));
+    m_actions[ShowDirection]->setText(tr("Show Robot Direction"));
+    m_actions[ShowDetectRange]->setText(tr("Show Detect Range"));
 }
 
 void Ground::onActionUpdateRobot()
@@ -830,6 +868,8 @@ void Ground::setMenuBar(MenuBar *menuBar)
     menuBar->addCategoryAction(MenuBar::Ground, m_actions[RobotColor]);
     menuBar->addCategoryAction(MenuBar::Ground, m_actions[RobotDirectionLineColor]);
     menuBar->addCategoryAction(MenuBar::Ground, m_actions[RobotDetectRangeColor]);
+    menuBar->addCategoryAction(MenuBar::Ground, m_actions[ShowDirection]);
+    menuBar->addCategoryAction(MenuBar::Ground, m_actions[ShowDetectRange]);
 }
 
 void Ground::setGenerator(GenerateGroundBase *generator)
@@ -861,6 +901,11 @@ void Ground::syncRobotData(const QList<Robot *> &robots,
     m_changed=true;
     //Reset the ground.
     reset();
+}
+
+void Ground::setSpeed(const int &speed)
+{
+    m_timeline->setInterval(speed);
 }
 
 void Ground::setBarracks(const QPolygonF &barracks)

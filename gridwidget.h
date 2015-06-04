@@ -21,21 +21,45 @@
 
 #include <QWidget>
 
+/*!
+ * \brief The GridWidget class is a class provide the grid background for UI
+ * enhancement.
+ */
 class GridWidget : public QWidget
 {
     Q_OBJECT
 public:
+    /*!
+     * \brief Construct the GridWidget.
+     * \param parent
+     */
     explicit GridWidget(QWidget *parent = 0);
 
+    /*!
+     * \brief Get the central widget.
+     * \return The central widget. It will be nullptr if you don't set.
+     */
     QWidget *widget() const;
-    void setWidget(QWidget *widget);
 
 signals:
 
 public slots:
+    /*!
+     * \brief Set the central widget. It will change the parentship of the
+     * widget.
+     * \param widget The prefer central widget.
+     */
+    void setWidget(QWidget *widget);
 
 protected:
+    /*!
+     * \brief Reimplemented from QWidget::resizeEvent().
+     */
     void resizeEvent(QResizeEvent *event);
+
+    /*!
+     * \brief Reimplemented from QWidget::paintEvent().
+     */
     void paintEvent(QPaintEvent *event);
 
 private:

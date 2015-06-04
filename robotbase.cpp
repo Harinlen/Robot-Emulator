@@ -37,11 +37,7 @@ void RobotBase::setPos(const QPointF &pos)
 
 void RobotBase::paintRobot(QPainter *painter)
 {
-    QPen robotPen(m_robotColor);
-    robotPen.setWidth(2);
-
     //Draw the robot.
-    painter->setPen(robotPen);
     painter->drawEllipse(m_pos, m_robotSize, m_robotSize);
 }
 
@@ -62,7 +58,7 @@ void RobotBase::paintRobotDetectArea(QPainter *painter)
     painter->drawEllipse(m_pos, m_detectRadius, m_detectRadius);
 }
 
-int RobotBase::m_robotSize=2;
+int RobotBase::m_robotSize=3;
 
 int RobotBase::robotSize()
 {
@@ -86,7 +82,7 @@ void RobotBase::setDetectRadius(int detectRadius)
     m_detectRadius = detectRadius;
 }
 
-QColor RobotBase::m_robotColor=QColor(255,255,255);
+QColor RobotBase::m_robotColor=QColor(59,120,133);
 
 void RobotBase::setRobotColor(const QColor &robotColor)
 {
@@ -98,7 +94,7 @@ QColor RobotBase::robotColor()
     return m_robotColor;
 }
 
-QColor RobotBase::m_detectRadiusColor=QColor(100,48,67);
+QColor RobotBase::m_detectRadiusColor=QColor(44,132,99);
 
 QColor RobotBase::detectRadiusColor()
 {
@@ -108,6 +104,8 @@ QColor RobotBase::detectRadiusColor()
 void RobotBase::setDetectRadiusColor(const QColor &detectRadiusColor)
 {
     m_detectRadiusColor = detectRadiusColor;
+    //Change the gradient color.
+    m_detectRadiusGradient.setColorAt(1, m_detectRadiusColor);
 }
 
 qreal RobotBase::angle() const
@@ -149,4 +147,16 @@ void RobotBase::initialRobotPatameters()
     m_detectRadiusGradient.setColorAt(0, QColor(0,0,0,0));
     m_detectRadiusGradient.setColorAt(0.6, QColor(0,0,0,0));
     m_detectRadiusGradient.setColorAt(1, m_detectRadiusColor);
+}
+
+QColor RobotBase::m_robotBorder=QColor(255,255,255);
+
+QColor RobotBase::robotBorder()
+{
+    return m_robotBorder;
+}
+
+void RobotBase::setRobotBorder(const QColor &robotBorder)
+{
+    m_robotBorder = robotBorder;
 }

@@ -48,6 +48,7 @@ RobotManageWidget::RobotManageWidget(QWidget *parent) :
 
     //Configure robot list.
     m_robotInitialDataView->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_robotInitialDataView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     m_robotInitialDataView->setModel(m_robotInitialDataModel);
     connect(m_robotInitialDataView->selectionModel(),
             &QItemSelectionModel::currentChanged,

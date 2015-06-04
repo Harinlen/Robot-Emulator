@@ -159,12 +159,25 @@ public:
      */
     static void initialRobotPatameters();
 
+    /*!
+     * \brief Get the color the all the robot border color.
+     * \return The QColor of all the robot border.
+     */
+    static QColor robotBorder();
+
+    /*!
+     * \brief Change the color of the robot border.
+     * \param robotBorder The QColor of the robot border.
+     */
+    static void setRobotBorder(const QColor &robotBorder);
+
 protected:
     QPointF m_pos;
     qreal m_angle;
 
     static int m_robotSize, m_detectRadius;
-    static QColor m_robotColor, m_detectRadiusColor, m_directionLineColor;
+    static QColor m_robotColor, m_detectRadiusColor, m_directionLineColor,
+                  m_robotBorder;
     static QRadialGradient m_detectRadiusGradient;
 };
 

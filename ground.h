@@ -68,7 +68,7 @@ public:
     void setGenerator(GenerateGroundBase *generator);
 
     /*!
-     * \brief syncRobotData.
+     * \brief Reimplemented from GroundBase::syncRobotData().
      */
     void syncRobotData(const QList<Robot *> &robots,
                        const QList<QPointF> &initialPosition,
@@ -77,6 +77,11 @@ public:
 signals:
 
 public slots:
+    /*!
+     * \brief Reimplemented from GroundBase::setSpeed().
+     */
+    void setSpeed(const int &speed);
+
     /*!
      * \brief Reimplemented from GroundBase::setBorder(const QPolygonF &).
      */
@@ -170,12 +175,17 @@ private:
         RobotColor,
         RobotDirectionLineColor,
         RobotDetectRangeColor,
+        ShowDirection,
+        ShowDetectRange,
         GroundActionsCount
     };
     QAction *m_actions[GroundActionsCount];
 
     QPolygonF m_border, m_barracks;
     QList<Robot *> m_robotList;
+
+    //Display options.
+    bool m_showDirection, m_showDetectRadius;
 
     //Project file status.
     QString m_filePath, m_fileName;

@@ -27,11 +27,22 @@ GroundGlobal *GroundGlobal::instance()
 
 GroundGlobal::GroundGlobal(QObject *parent) :
     QObject(parent),
-    m_borderColor(QColor(5, 73, 88)),
-    m_barracksColor(QColor(255,127,0)),
+    m_borderColor(QColor(73, 229, 249, 100)),
+    m_barracksColor(QColor(79,219,251)),
     m_referenceLineColor(QColor(27, 68, 76)),
-    m_baseColor(QColor(1,33,44))
+    m_baseColor(QColor(1,7,20)),
+    m_groundColor(QColor(0x00, 0x40, 0x51))
 {
+}
+
+QColor GroundGlobal::groundColor() const
+{
+    return m_groundColor;
+}
+
+void GroundGlobal::setGroundColor(const QColor &groundColor)
+{
+    m_groundColor = groundColor;
 }
 
 QColor GroundGlobal::baseColor() const

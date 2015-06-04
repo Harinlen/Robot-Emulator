@@ -21,7 +21,7 @@
 
 #include <QWidget>
 
-class Robot;
+class RobotBase;
 class GroundGlobal;
 /*!
  * \brief The GroundPreviewWidget class provides the basic information of a
@@ -37,6 +37,10 @@ public:
      * \param parent The parent widget.
      */
     explicit GroundPreviewer(QWidget *parent = 0);
+
+    /*!
+     * \brief Destroy the group previewer.
+     */
     ~GroundPreviewer();
 
     /*!
@@ -91,7 +95,7 @@ private:
 
     qreal m_xOffset, m_yOffset, m_groundParameter;
     bool m_showPreviewPoint;
-    Robot *m_previewRobot;
+    RobotBase *m_previewRobot;
 
     GroundGlobal *m_groundGlobal;
 };

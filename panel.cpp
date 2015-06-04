@@ -18,6 +18,7 @@
 #include <QBoxLayout>
 #include <QPushButton>
 #include <QFileDialog>
+#include <QSignalMapper>
 
 #include "panel.h"
 #include "menubar.h"
@@ -25,10 +26,11 @@
 
 Panel::Panel(QWidget *parent) :
     QWidget(parent),
+    m_speedMapper(new QSignalMapper(this)),
     m_mainLayout(new QBoxLayout(QBoxLayout::TopToBottom, this))
 {
     //Set the main layout.
-    m_mainLayout->setContentsMargins(0,0,0,0);
+    m_mainLayout->setContentsMargins(2,2,2,2);
     m_mainLayout->setSpacing(2);
     setLayout(m_mainLayout);
 
@@ -38,6 +40,7 @@ Panel::Panel(QWidget *parent) :
         //Initial the button.
         m_commands[i]=new QPushButton(this);
         m_mainLayout->addWidget(m_commands[i]);
+
         //Initial the actions.
         m_commandActions[i]=new QAction(this);
         //Link the actions to the button.
@@ -46,6 +49,20 @@ Panel::Panel(QWidget *parent) :
     }
     m_mainLayout->addStretch();
 
+    //Set speed mapping.
+    for(int i=SetSpeedQuarter; i<=SetSpeedHexa; i++)
+    {
+        connect(m_commands[i], SIGNAL(clicked()), m_speedMapper, SLOT(map()));
+    }
+    m_speedMapper->setMapping(m_commands[SetSpeedQuarter], 64);
+    m_speedMapper->setMapping(m_commands[SetSpeedHalf], 32);
+    m_speedMapper->setMapping(m_commands[SetSpeedOriginal], 16);
+    m_speedMapper->setMapping(m_commands[SetSpeedDouble], 8);
+    m_speedMapper->setMapping(m_commands[SetSpeedTriple], 5);
+    m_speedMapper->setMapping(m_commands[SetSpeedQuadra], 4);
+    m_speedMapper->setMapping(m_commands[SetSpeedPanta], 3);
+    m_speedMapper->setMapping(m_commands[SetSpeedHexa], 2);
+
     //Set shortcuts.
     m_commandActions[Start]->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_R));
     m_commandActions[Pause]->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_E));
@@ -53,12 +70,20 @@ Panel::Panel(QWidget *parent) :
     m_commandActions[NextFrame]->setShortcut(QKeySequence(Qt::CTRL+
                                                           Qt::SHIFT+
                                                           Qt::Key_M));
-
+    m_commandActions[SetSpeedQuarter]->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_1));
+    m_commandActions[SetSpeedHalf]->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_2));
+    m_commandActions[SetSpeedOriginal]->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_3));
+    m_commandActions[SetSpeedDouble]->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_4));
+    m_commandActions[SetSpeedTriple]->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_5));
+    m_commandActions[SetSpeedQuadra]->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_6));
+    m_commandActions[SetSpeedPanta]->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_7));
+    m_commandActions[SetSpeedHexa]->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_8));
     retranslate();
 }
 
 void Panel::setGround(GroundBase *ground)
 {
+    connect(m_speedMapper, SIGNAL(mapped(int)), ground, SLOT(setSpeed(int)));
     connect(m_commands[Start],
             static_cast<void (QPushButton::*)(bool)>(&QPushButton::clicked),
             [=]{ground->start();});
@@ -111,12 +136,21 @@ void Panel::setMenuBar(MenuBar *menuBar)
 
 void Panel::retranslate()
 {
-    QString actionCaptions[ControlCommandCount];
+    QString actionCaptions[ControlCommandCount],
+            speedCaption=tr("Speed %1");
     actionCaptions[Start]=tr("Start");
     actionCaptions[Pause]=tr("Pause");
     actionCaptions[Reset]=tr("Reset");
     actionCaptions[NextFrame]=tr("Next Frame");
-    actionCaptions[SaveScreenshot]=tr("Save current status");
+    actionCaptions[SaveScreenshot]=tr("Snapshot");
+    actionCaptions[SetSpeedQuarter]=speedCaption.arg("0.25x");
+    actionCaptions[SetSpeedHalf]=speedCaption.arg("0.5x");
+    actionCaptions[SetSpeedOriginal]=speedCaption.arg("1x");
+    actionCaptions[SetSpeedDouble]=speedCaption.arg("2x");
+    actionCaptions[SetSpeedTriple]=speedCaption.arg("3x");
+    actionCaptions[SetSpeedQuadra]=speedCaption.arg("4x");
+    actionCaptions[SetSpeedPanta]=speedCaption.arg("5x");
+    actionCaptions[SetSpeedHexa]=speedCaption.arg("6x");
 
     //Update the command buttons and actions.
     for(int i=0; i<ControlCommandCount; i++)

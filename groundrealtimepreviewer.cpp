@@ -143,15 +143,16 @@ void GroundRealtimePreviewer::paintEvent(QPaintEvent *event)
         {
             //Set the preview pos to the preview robot.
             m_proxyRobot->setPos(pointFromGround(m_positions.at(i)));
-            //Draw the robot.
-            m_proxyRobot->paintRobot(&painter);
             //Check the selected robot
             if(m_robots.at(i)==m_selectedRobot)
             {
                 //Draw the parameter.
                 m_proxyRobot->setAngle(m_angles.at(i));
+                m_proxyRobot->paintRobotDetectArea(&painter);
                 m_proxyRobot->paintRobotParameter(&painter);
             }
+            //Draw the robot.
+            m_proxyRobot->paintRobot(&painter);
         }
     }
 }

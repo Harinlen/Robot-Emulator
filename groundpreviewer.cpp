@@ -17,7 +17,7 @@
  */
 #include <QPainter>
 
-#include "robot.h"
+#include "robotbase.h"
 #include "groundglobal.h"
 
 #include "groundpreviewer.h"
@@ -32,7 +32,7 @@ GroundPreviewer::GroundPreviewer(QWidget *parent) :
     m_yOffset(0),
     m_groundParameter(1.0),
     m_showPreviewPoint(false),
-    m_previewRobot(new Robot)
+    m_previewRobot(new RobotBase)
 {
     //Initial size.
     setFixedSize(200,200);
@@ -62,17 +62,37 @@ void GroundPreviewer::paintEvent(QPaintEvent *event)
     painter.setRenderHints(QPainter::Antialiasing |
                            QPainter::TextAntialiasing |
                            QPainter::SmoothPixmapTransform, true);
+    //Fill the background.
+    painter.fillRect(rect(), m_groundGlobal->baseColor());
     //Paint the border.
     painter.setPen(m_groundGlobal->borderColor());
+    painter.setPen(Qt::NoPen);
+    QBrush borderBrush(Qt::SolidPattern);
+    borderBrush.setColor(m_groundGlobal->groundColor());
+    painter.setBrush(borderBrush);
+    painter.drawPolygon(m_previewGround);
+    painter.setPen(m_groundGlobal->borderColor());
+    borderBrush.setStyle(Qt::FDiagPattern);
+    borderBrush.setColor(m_groundGlobal->borderColor());
+    painter.setBrush(borderBrush);
     painter.drawPolygon(m_previewGround);
     //Paint the barracks.
     painter.setPen(m_groundGlobal->barracksColor());
+    painter.setBrush(QColor(0,0,0,0));
     painter.drawPolygon(m_previewBarracks);
     //If display the preview robot.
     if(m_showPreviewPoint)
     {
         //Paint the preview robot.
+        painter.setPen(Qt::NoPen);
+        m_previewRobot->paintRobotDetectArea(&painter);
+        painter.setPen(RobotBase::directionLineColor());
+        painter.setBrush(Qt::NoBrush);
         m_previewRobot->paintRobotParameter(&painter);
+        QPen robotPen(RobotBase::robotBorder());
+        robotPen.setWidth(2);
+        painter.setPen(robotPen);
+        painter.setBrush(RobotBase::robotColor());
         m_previewRobot->paintRobot(&painter);
     }
 }
@@ -97,8 +117,8 @@ void GroundPreviewer::setPreviewBorder(const QPolygonF &groundBorder)
     QSize groundSize=QSize(borderBoundingRect.right(),
                            borderBoundingRect.bottom());
     //Bounding revise.
-    groundSize+=QSize(2+(Robot::detectRadius()<<1),
-                      2+(Robot::detectRadius()<<1));
+    groundSize+=QSize(2+(RobotBase::detectRadius()<<1),
+                      2+(RobotBase::detectRadius()<<1));
     qreal groundHeight=groundSize.height(),
             groundWidth=groundSize.width();
     //Update the offset.

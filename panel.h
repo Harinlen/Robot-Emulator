@@ -23,6 +23,7 @@
 
 class QBoxLayout;
 class QPushButton;
+class QSignalMapper;
 class GroundBase;
 class MenuBar;
 /*!
@@ -48,6 +49,7 @@ public slots:
      * \param ground The controlled ground class.
      */
     void setGround(GroundBase *ground);
+
     /*!
      * \brief Set the menu bar to add control actions.
      * \param menuBar The menu bar.
@@ -65,10 +67,19 @@ private:
         Reset,
         NextFrame,
         SaveScreenshot,
+        SetSpeedQuarter,
+        SetSpeedHalf,
+        SetSpeedOriginal,
+        SetSpeedDouble,
+        SetSpeedTriple,
+        SetSpeedQuadra,
+        SetSpeedPanta,
+        SetSpeedHexa,
         ControlCommandCount,
     };
     QPushButton *m_commands[ControlCommandCount];
     QAction *m_commandActions[ControlCommandCount];
+    QSignalMapper *m_speedMapper;
 
     QBoxLayout *m_mainLayout;
 };
