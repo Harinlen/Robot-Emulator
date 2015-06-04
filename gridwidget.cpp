@@ -16,6 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 #include <QPainter>
+#include <QStaticText>
 
 #include "groundglobal.h"
 
@@ -36,15 +37,42 @@ void GridWidget::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     painter.setPen(GroundGlobal::instance()->referenceLineColor());
     painter.setBrush(QColor(0,0,0,0));
-    for(int i=30; i<=height(); i+=30)
+    QFont textFont=font();
+    textFont.setPixelSize(4);
+    painter.setFont(textFont);
+    int stopWidth=width()+height()+m_gridStep;
+    for(int i=0; i<stopWidth; i+=m_gridStep)
     {
-        painter.drawLine(0, i, width(), i);
+        //Draw right top to left bottom lines.
+        painter.drawLine(i, 0, i-height(), height());
+        //Draw left top to right bottom lines.
+        painter.drawLine(i, 0, i+height(), height());
+        int horizon=i-m_gridSize+8;
+        for(int j=-m_gridSize-2; j<height()+m_gridStep; j+=m_gridSize)
+        {
+            painter.drawStaticText(horizon,
+                                   j,
+                                   QStaticText("("+QString::number(horizon)+", "+QString::number(j)+")"));
+            horizon-=m_gridSize;
+        }
     }
-    for(int i=30; i<=width(); i+=30)
+    stopWidth=-height();
+    for(int i=0; i>=stopWidth; i-=m_gridStep)
     {
-        painter.drawLine(i, 0, i, height());
+        painter.drawLine(i, 0, i+height(), height());
     }
 }
+
+int GridWidget::m_gridStep=100;
+int GridWidget::m_gridSize=50;
+
+void GridWidget::setGridStep(int gridStep)
+{
+    //Update the parameter.
+    m_gridStep = gridStep;
+    m_gridSize = m_gridStep>>1;
+}
+
 QWidget *GridWidget::widget() const
 {
     return m_widget;

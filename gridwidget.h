@@ -41,6 +41,12 @@ public:
      */
     QWidget *widget() const;
 
+    static int gridSize();
+    static void setGridSize(int gridSize);
+
+    static int gridStep();
+    static void setGridStep(int gridStep);
+
 signals:
 
 public slots:
@@ -64,6 +70,9 @@ protected:
 
 private:
     QWidget *m_widget;
+
+    static int m_gridSize;
+    static int m_gridStep;
 };
 
 #endif // GRIDWIDGET_H

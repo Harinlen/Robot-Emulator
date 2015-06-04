@@ -31,7 +31,7 @@ GroundGlobal::GroundGlobal(QObject *parent) :
     m_barracksColor(QColor(79,219,251)),
     m_referenceLineColor(QColor(27, 68, 76)),
     m_baseColor(QColor(1,7,20)),
-    m_groundColor(QColor(0x00, 0x40, 0x51))
+    m_groundColor(QColor(0x00, 0x40, 0x51, 200))
 {
 }
 
