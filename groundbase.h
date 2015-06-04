@@ -112,6 +112,12 @@ public:
                                const QList<QPointF> &initialPosition,
                                const QList<qreal> &initialAngle)=0;
 
+    /*!
+     * \brief Get the show coordinate action.
+     * \return The show coordinate action.
+     */
+    virtual QAction *showCoordinate()=0;
+
 signals:
     /*!
      * \brief When the user change the border, this signal will be emitted.

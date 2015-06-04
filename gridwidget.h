@@ -47,6 +47,8 @@ public:
     static int gridStep();
     static void setGridStep(int gridStep);
 
+    bool coordinate() const;
+
 signals:
 
 public slots:
@@ -56,6 +58,7 @@ public slots:
      * \param widget The prefer central widget.
      */
     void setWidget(QWidget *widget);
+    void setCoordinate(bool coordinate);
 
 protected:
     /*!
@@ -69,8 +72,16 @@ protected:
     void paintEvent(QPaintEvent *event);
 
 private:
-    QWidget *m_widget;
+    struct CoordinateItem
+    {
+        int x;
+        int y;
+        QString text;
+    };
+    QList<CoordinateItem> m_captions;
 
+    QWidget *m_widget;
+    bool m_coordinate;
     static int m_gridSize;
     static int m_gridStep;
 };

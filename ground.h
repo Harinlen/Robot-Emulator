@@ -74,6 +74,11 @@ public:
                        const QList<QPointF> &initialPosition,
                        const QList<qreal> &initialAngle);
 
+    /*!
+     * \brief Reimplemented from GroundBase::showCoordinate().
+     */
+    QAction *showCoordinate();
+
 signals:
 
 public slots:
@@ -177,6 +182,7 @@ private:
         RobotDetectRangeColor,
         ShowDirection,
         ShowDetectRange,
+        ShowCoordinate,
         GroundActionsCount
     };
     QAction *m_actions[GroundActionsCount];

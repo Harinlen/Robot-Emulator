@@ -24,7 +24,8 @@
 
 GridWidget::GridWidget(QWidget *parent) :
     QWidget(parent),
-    m_widget(nullptr)
+    m_widget(nullptr),
+    m_coordinate(false)
 {
     setAutoFillBackground(true);
 }
@@ -47,23 +48,35 @@ void GridWidget::paintEvent(QPaintEvent *event)
         painter.drawLine(i, 0, i-height(), height());
         //Draw left top to right bottom lines.
         painter.drawLine(i, 0, i+height(), height());
-        int horizon=i-m_gridSize+8;
-        for(int j=-m_gridSize-2; j<height()+m_gridStep; j+=m_gridSize)
-        {
-            painter.drawStaticText(horizon,
-                                   j,
-                                   QStaticText("("+QString::number(horizon)+", "+QString::number(j)+")"));
-            horizon-=m_gridSize;
-        }
     }
     stopWidth=-height();
     for(int i=0; i>=stopWidth; i-=m_gridStep)
     {
         painter.drawLine(i, 0, i+height(), height());
     }
+    //Draw captions.
+    if(m_coordinate)
+    {
+        for(CoordinateItem item : m_captions)
+        {
+            painter.drawText(item.x, item.y, item.text);
+        }
+    }
+}
+
+bool GridWidget::coordinate() const
+{
+    return m_coordinate;
+}
+
+void GridWidget::setCoordinate(bool coordinate)
+{
+    m_coordinate = coordinate;
+    update();
 }
 
 int GridWidget::m_gridStep=100;
+
 int GridWidget::m_gridSize=50;
 
 void GridWidget::setGridStep(int gridStep)
@@ -91,6 +104,22 @@ void GridWidget::resizeEvent(QResizeEvent *event)
     if(m_widget)
     {
         m_widget->resize(size());
+    }
+    //Update the items.
+    m_captions.clear();
+    int stopWidth=width()+height()+m_gridStep;
+    for(int i=0; i<stopWidth; i+=m_gridStep)
+    {
+        int horizon=i-m_gridSize+8;
+        for(int j=-m_gridSize-2; j<height()+m_gridStep; j+=m_gridSize)
+        {
+            CoordinateItem item;
+            item.x=horizon;
+            item.y=j;
+            item.text="("+QString::number(horizon)+", "+QString::number(j)+")";
+            m_captions.append(item);
+            horizon-=m_gridSize;
+        }
     }
 }
 

@@ -45,6 +45,9 @@ MainWindow::MainWindow(QWidget *parent) :
     setMinimumSize(500, 309);
     //Initial the grid widget.
     GridWidget *gridWidget=new GridWidget(this);
+    connect(m_ground->showCoordinate(),
+            static_cast<void (QAction::*)(bool)>(&QAction::triggered),
+            gridWidget, &GridWidget::setCoordinate);
     setCentralWidget(gridWidget);
     //Initial the scroll area.
     QScrollArea *groundArea=new QScrollArea(this);

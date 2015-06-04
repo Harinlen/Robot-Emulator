@@ -71,6 +71,9 @@ Ground::Ground(QWidget *parent) :
 
     m_actions[ShowDirection]->setCheckable(true);
     m_actions[ShowDirection]->setChecked(true);
+
+    m_actions[ShowCoordinate]->setCheckable(true);
+    m_actions[ShowCoordinate]->setChecked(false);
     //Set the key sequence.
     m_actions[New]->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_N));
     m_actions[Open]->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_O));
@@ -274,6 +277,7 @@ void Ground::retranslate()
     m_actions[RobotDetectRangeColor]->setText(tr("Set robot detect range color"));
     m_actions[ShowDirection]->setText(tr("Show Robot Direction"));
     m_actions[ShowDetectRange]->setText(tr("Show Detect Range"));
+    m_actions[ShowCoordinate]->setText(tr("Show Coordinate"));
 }
 
 void Ground::onActionUpdateRobot()
@@ -870,6 +874,7 @@ void Ground::setMenuBar(MenuBar *menuBar)
     menuBar->addCategoryAction(MenuBar::Ground, m_actions[RobotDetectRangeColor]);
     menuBar->addCategoryAction(MenuBar::Ground, m_actions[ShowDirection]);
     menuBar->addCategoryAction(MenuBar::Ground, m_actions[ShowDetectRange]);
+    menuBar->addCategoryAction(MenuBar::Ground, m_actions[ShowCoordinate]);
 }
 
 void Ground::setGenerator(GenerateGroundBase *generator)
@@ -901,6 +906,11 @@ void Ground::syncRobotData(const QList<Robot *> &robots,
     m_changed=true;
     //Reset the ground.
     reset();
+}
+
+QAction *Ground::showCoordinate()
+{
+    return m_actions[ShowCoordinate];
 }
 
 void Ground::setSpeed(const int &speed)
