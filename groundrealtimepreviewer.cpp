@@ -139,19 +139,39 @@ void GroundRealtimePreviewer::paintEvent(QPaintEvent *event)
         painter.setRenderHints(QPainter::Antialiasing |
                                QPainter::TextAntialiasing |
                                QPainter::SmoothPixmapTransform, true);
+        QPen robotPen(RobotBase::robotBorder());
+        robotPen.setWidth(2);
+        painter.setPen(robotPen);
+        painter.setBrush(RobotBase::robotColor());
+        painter.setOpacity(0.2);
+        int selectedIndex=-1;
         for(int i=0; i<m_positions.size(); i++)
         {
-            //Set the preview pos to the preview robot.
-            m_proxyRobot->setPos(pointFromGround(m_positions.at(i)));
             //Check the selected robot
             if(m_robots.at(i)==m_selectedRobot)
             {
-                //Draw the parameter.
-                m_proxyRobot->setAngle(m_angles.at(i));
-                m_proxyRobot->paintRobotDetectArea(&painter);
-                m_proxyRobot->paintRobotParameter(&painter);
+                selectedIndex=i;
+                continue;
             }
+            //Set the preview pos to the preview robot.
+            m_proxyRobot->setPos(pointFromGround(m_positions.at(i)));
             //Draw the robot.
+            m_proxyRobot->paintRobot(&painter);
+        }
+        //Paint the selected robot.
+        if(selectedIndex!=-1)
+        {
+            painter.setOpacity(1.0);
+            //Draw the parameter.
+            m_proxyRobot->setPos(pointFromGround(m_positions.at(selectedIndex)));
+            m_proxyRobot->setAngle(m_angles.at(selectedIndex));
+            painter.setPen(Qt::NoPen);
+            m_proxyRobot->paintRobotDetectArea(&painter);
+            painter.setPen(RobotBase::directionLineColor());
+            painter.setBrush(Qt::NoBrush);
+            m_proxyRobot->paintRobotParameter(&painter);
+            painter.setPen(robotPen);
+            painter.setBrush(RobotBase::robotColor());
             m_proxyRobot->paintRobot(&painter);
         }
     }

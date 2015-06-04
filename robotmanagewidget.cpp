@@ -167,7 +167,7 @@ void RobotManageWidget::retranslate()
     m_cancel->setText(tr("Cancel"));
     m_deletePoint->setText(tr("Delete"));
 
-    m_manageBox->setTitle(tr("Robots"));
+    m_manageBox->setTitle(tr("Robots Force"));
 
     updateHeader();
 }
