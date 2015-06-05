@@ -171,6 +171,7 @@ void Ground::setBorder(const QPolygonF &border)
                       2+(Robot::detectRadius()<<1));
     //Resize the ground.
     setFixedSize(groundSize);
+    emit groundSizeChanged(groundSize);
     //Update the widget.
     update();
     //Emit changed signal.
@@ -345,11 +346,37 @@ void Ground::onActionUpdateRobot()
     //Move un-destoied unit enemy if 80% of the robots reach the border.
     if(m_reachBorderCount>m_minimumMoveEnemyCount)
     {
+        //Get the next position of the enemies.
         for(Enemy *enemy : m_enemyList)
         {
             if(!enemy->destory())
             {
-                enemy->moveOneStep();
+                bool reachTarget=false;
+                QPointF nextStep=enemy->nextStep(reachTarget);
+                if((!Enemy::missionComplete()) && reachTarget)
+                {
+                    //Set mission complete flag.
+                    Enemy::setMissionComplete(true);
+                    //Generate the four target point.
+                    QList<QPointF> targetPoints;
+                    targetPoints << QPointF(0, 0)
+                                << QPointF(width(), 0)
+                                << QPointF(0, height())
+                                << QPointF(width(), height());
+                    //Set the new target.
+                    for(QPointF point : targetPoints)
+                    {
+                        if(!m_border.containsPoint(point,
+                                                   Qt::WindingFill))
+                        {
+                            Enemy::setTarget(point);
+                        }
+                    }
+                    //Get the new next step.
+                    nextStep=enemy->nextStep(reachTarget);
+                }
+                //Add next step to steps list.
+                enemy->setPos(nextStep);
             }
         }
     }
@@ -673,6 +700,7 @@ void Ground::clearGroundData()
 
     //Resize ground.
     setFixedSize(0,0);
+    emit groundSizeChanged(QSize(0,0));
 }
 
 bool Ground::readGroundData(const QString &filePath)
@@ -991,10 +1019,15 @@ bool Ground::addEnemy(Enemy *enemy)
     //Add the enemy to initial position.
     m_enemyInitialPosition.append(enemy->pos());
     //Resize the ground.
-    int enemyRightMost=enemy->pos().x()+(Enemy::detectRadius()<<1),
-            enemyBottomMost=enemy->pos().y()+(Enemy::detectRadius()<<1);
-    setFixedSize(qMax(width(), enemyRightMost),
-                 qMax(height(), enemyBottomMost));
+    QSize preferSize=
+            QSize(qMax(width(), (int)(enemy->pos().x()+(Enemy::detectRadius()<<1))),
+                  qMax(height(), (int)(enemy->pos().y()+(Enemy::detectRadius()<<1))));
+    //If the size is not the same as current size, emit size changed signal.
+    if(preferSize!=size())
+    {
+        setFixedSize(preferSize);
+        emit groundSizeChanged(preferSize);
+    }
     return true;
 }
 
@@ -1166,6 +1199,9 @@ void Ground::reset()
         //Reset the position.
         enemy->setPos(m_enemyInitialPosition.at(i));
     }
+    //Reset the enemy target point and flag.
+    Enemy::setMissionComplete(false);
+    Enemy::setTarget(m_barracks.boundingRect().center());
     //Update the ground.
     update();
 }

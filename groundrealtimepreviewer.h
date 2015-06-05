@@ -60,7 +60,7 @@ public:
      * \brief The display exists enemys setting.
      * \return If display the exist enemy, it will be true, or else false.
      */
-    bool displayEnemys() const;
+    bool displayEnemies() const;
 
 
 signals:
@@ -77,7 +77,7 @@ public slots:
      * \param displayEnemys To display the exist enemys, set it true, or else
      * false.
      */
-    void setDisplayEnemys(bool displayEnemys);
+    void setDisplayEnemies(bool displayEnemies);
 
     /*!
      * \brief Set the previewer will display or hide the exist robots.
@@ -150,11 +150,11 @@ private:
     Robot *m_proxyRobot;
     Enemy *m_proxyEnemy;
     GroundBase *m_ground;
-    bool m_displayRobots, m_displayEnemys;
+    bool m_displayRobots, m_displayEnemies;
     Robot *m_selectedRobot;
     Enemy *m_selectedEnemy;
 
-    QList<Enemy *> m_enemys;
+    QList<Enemy *> m_enemies;
     QList<QPointF> m_enemyPositions;
     QList<Robot *> m_robots;
     QList<QPointF> m_positions;

@@ -22,6 +22,8 @@
 
 #include "about.h"
 
+#include <QDebug>
+
 void About::showAbout(QWidget *parent)
 {
     QScopedPointer<About> aboutWindow(new About(parent));
@@ -31,29 +33,40 @@ void About::showAbout(QWidget *parent)
 About::About(QWidget *parent) :
     QDialog(parent)
 {
+    setFixedSize(325, 356);
     setWindowTitle(tr("About Robot Emulator"));
     //Set the main layout.
     QBoxLayout *mainLayout=new QBoxLayout(QBoxLayout::TopToBottom,
                                           this);
+    mainLayout->setContentsMargins(20,20,20,20);
+    mainLayout->setSpacing(15);
     setLayout(mainLayout);
 
-    QLabel *icon=new QLabel(this);
-    icon->setPixmap(QPixmap("://res/icon.png"));
-    icon->setFixedSize(256, 256);
-    icon->setScaledContents(true);
-    mainLayout->addWidget(icon, 1, Qt::AlignCenter);
-    mainLayout->addWidget(new QLabel(tr("Robot Emulator"), this),
+    QLabel *label=new QLabel(this);
+    label->setPixmap(QPixmap("://res/icon.png"));
+    label->setFixedSize(128, 128);
+    label->setScaledContents(true);
+    mainLayout->addWidget(label, 1, Qt::AlignCenter);
+    label=new QLabel(tr("Robot Emulator"), this);
+    QFont labelFont=label->font();
+    labelFont.setBold(true);
+    label->setFont(labelFont);
+    mainLayout->addWidget(label,
                           0,
                           Qt::AlignHCenter);
-    mainLayout->addWidget(new QLabel(QApplication::applicationVersion(), this),
+    mainLayout->addWidget(new QLabel(tr("New robot simulation experience")),
+                          0,
+                          Qt::AlignHCenter);
+
+    mainLayout->addWidget(new QLabel(tr("Emulator version ")+
+                                     QApplication::applicationVersion(),
+                                     this),
                           0,
                           Qt::AlignHCenter);
     QLabel *author=new QLabel(this);
     author->setAlignment(Qt::AlignHCenter);
-    author->setText(tr("Author:\n"
-                       "Haolei Ye, 1120132191, Class: 08111302\n"
-                        "Han Wang, 1120132065, Class: 08211301\n"
-                     "Quanquan Li, 1120132192, Class: 08211302\n"));
+    author->setText(tr("Haolei Ye, Han Wang, and Quanquan Li\n"
+                       "All rights reserved."));
     mainLayout->addWidget(author,
                           0,
                           Qt::AlignHCenter);

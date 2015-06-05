@@ -59,9 +59,10 @@ public:
     static void setTarget(const QPointF &target);
 
     /*!
-     * \brief Ask the enemy move one step to the target point.
+     * \brief Get the next step of the enemy.
+     * \return The next step of the enemy.
      */
-    void moveOneStep();
+    QPointF nextStep(bool &reachTarget);
 
     /*!
      * \brief Whether this enemy is destoried by robot.
@@ -75,8 +76,22 @@ public:
      */
     void setDestory(bool destory);
 
+    /*!
+     * \brief Get the enemy mission complete status.
+     * \return The enemy mission complete status.
+     */
+    static bool missionComplete();
+
+    /*!
+     * \brief Set the enemy mission complete status.
+     * \param missionComplete To make all the enemy when to the final position,
+     * set it to true.
+     */
+    static void setMissionComplete(bool missionComplete);
+
 private:
     static QPointF m_target;
+    static bool m_missionComplete;
     bool m_destory;
 };
 

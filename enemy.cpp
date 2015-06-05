@@ -47,16 +47,13 @@ void Enemy::setTarget(const QPointF &target)
     m_target = target;
 }
 
-void Enemy::moveOneStep()
+QPointF Enemy::nextStep(bool &reachTarget)
 {
     QLineF routine(m_pos, m_target);
-    if(routine.length()<0.9)
-    {
-        //The enemy reach the target point.
-        return;
-    }
-    setPos(routine.pointAt(1/routine.length()));
+    reachTarget=(routine.length()<0.9);
+    return routine.pointAt(1/routine.length());
 }
+
 bool Enemy::destory() const
 {
     return m_destory;
@@ -66,5 +63,18 @@ void Enemy::setDestory(bool destory)
 {
     m_destory = destory;
 }
+
+bool Enemy::m_missionComplete=false;
+
+bool Enemy::missionComplete()
+{
+    return m_missionComplete;
+}
+
+void Enemy::setMissionComplete(bool missionAccept)
+{
+    m_missionComplete = missionAccept;
+}
+
 
 

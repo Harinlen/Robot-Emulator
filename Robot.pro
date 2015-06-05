@@ -15,8 +15,6 @@ win32
 macx
 {
     ICON = icon.icns
-    QMAKE_CXXFLAGS -= -O2
-    QMAKE_CXXFLAGS += -O3
 }
 
 SOURCES += \

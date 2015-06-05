@@ -129,28 +129,9 @@ bool GroundPreviewer::showPreviewEnemy() const
     return m_showPreviewEnemy;
 }
 
-void GroundPreviewer::setShowPreviewEnemy(bool showPreviewEnemy)
+void GroundPreviewer::onActionGroundSizeChanged(const QSize &groundSize)
 {
-    m_showPreviewEnemy = showPreviewEnemy;
-}
-
-bool GroundPreviewer::showPreviewPoint() const
-{
-    return m_showPreviewPoint;
-}
-
-void GroundPreviewer::setPreviewBorder(const QPolygonF &groundBorder)
-{
-    QPolygonF previewGroundBorder;
-    //Update the ground height and width.
-    QRect borderBoundingRect=groundBorder.toPolygon().boundingRect();
-    QSize groundSize=QSize(borderBoundingRect.right(),
-                           borderBoundingRect.bottom());
-    //Bounding revise.
-    groundSize+=QSize(2+(RobotBase::detectRadius()<<1),
-                      2+(RobotBase::detectRadius()<<1));
-    qreal groundHeight=groundSize.height(),
-            groundWidth=groundSize.width();
+    qreal groundHeight=groundSize.height(), groundWidth=groundSize.width();
     //Update the offset.
     if(groundHeight<groundWidth)
     {
@@ -164,21 +145,35 @@ void GroundPreviewer::setPreviewBorder(const QPolygonF &groundBorder)
         {
             m_groundParameter=1.0;
         }
+        return;
     }
-    else
+    //Calculate the offset.
+    m_xOffset=(groundHeight-groundWidth)/2;
+    m_yOffset=0;
+    //Set the parameter.
+    m_groundParameter=groundHeight;
+    //Avoid the divided by 0 bug.
+    if(m_groundParameter==0)
     {
-        //Calculate the offset.
-        m_xOffset=(groundHeight-groundWidth)/2;
-        m_yOffset=0;
-        //Set the parameter.
-        m_groundParameter=groundHeight;
-        //Avoid the divided by 0 bug.
-        if(m_groundParameter==0)
-        {
-            m_groundParameter=1.0;
-        }
+        m_groundParameter=1.0;
     }
+}
+
+void GroundPreviewer::setShowPreviewEnemy(bool showPreviewEnemy)
+{
+    m_showPreviewEnemy = showPreviewEnemy;
+}
+
+bool GroundPreviewer::showPreviewPoint() const
+{
+    return m_showPreviewPoint;
+}
+
+void GroundPreviewer::setPreviewBorder(const QPolygonF &groundBorder)
+{
+    //Update the ground height and width.
     //Gernerate the preview border, will zoom the original ground.
+    QPolygonF previewGroundBorder;
     for(QPointF borderPoint : groundBorder)
     {
         previewGroundBorder.append(pointFromGround(borderPoint));

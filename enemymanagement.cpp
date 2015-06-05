@@ -92,12 +92,12 @@ EnemyManagement::EnemyManagement(QWidget *parent) :
             [=]
             {
                 m_groundPreview->setEnemyPreviewList(m_enemyManage->enemyList(),
-                                                      m_enemyManage->positionList());
+                                                     m_enemyManage->positionList());
             });
     connect(m_enemyManage, &EnemyManageWidget::requireUpdatePositionList,
             [=]
             {
-                m_groundPreview->setPositionList(m_enemyManage->positionList());
+                m_groundPreview->setEnemyPositionList(m_enemyManage->positionList());
             });
     m_stackLayout->addWidget(m_enemyManage);
 
@@ -125,7 +125,7 @@ void EnemyManagement::addEnemy()
     //Make the preview show the preview robot.
     m_groundPreview->setShowPreviewEnemy(true);
     //Hide the exist robot.
-    m_groundPreview->setDisplayEnemys(false);
+    m_groundPreview->setDisplayEnemies(false);
     //Show the dialog.
     show();
 }
@@ -147,7 +147,7 @@ void EnemyManagement::manageEnemy()
     //Hide the preview robot.
     m_groundPreview->setShowPreviewEnemy(false);
     //Show the exist robots.
-    m_groundPreview->setDisplayEnemys(true);
+    m_groundPreview->setDisplayEnemies(true);
     //Show the dialog.
     show();
 }

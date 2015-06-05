@@ -22,13 +22,15 @@
 
 #include "groundrealtimepreviewer.h"
 
+#include <QDebug>
+
 GroundRealtimePreviewer::GroundRealtimePreviewer(QWidget *parent) :
     GroundPreviewer(parent),
     m_proxyRobot(new Robot()),
     m_proxyEnemy(new Enemy()),
     m_ground(nullptr),
     m_displayRobots(false),
-    m_displayEnemys(false),
+    m_displayEnemies(false),
     m_selectedRobot(nullptr),
     m_selectedEnemy(nullptr)
 {
@@ -44,6 +46,15 @@ void GroundRealtimePreviewer::setGround(GroundBase *ground)
     //Save the ground.
     m_ground=ground;
     //Link the ground.
+    connect(m_ground, &GroundBase::groundSizeChanged,
+            [=](const QSize &groundSize)
+            {
+                //Update the ground size.
+                onActionGroundSizeChanged(groundSize);
+                //Update the border and barracks.
+                onActionBorderChanged();
+                onActionBarracksChanged();
+            });
     connect(m_ground, &GroundBase::borderChanged,
             this, &GroundRealtimePreviewer::onActionBorderChanged);
     connect(m_ground, &GroundBase::barracksChanged,
@@ -72,14 +83,17 @@ void GroundRealtimePreviewer::onActionBarracksChanged()
     setPreviewBarracks(m_ground->barracks());
 }
 
-bool GroundRealtimePreviewer::displayEnemys() const
+bool GroundRealtimePreviewer::displayEnemies() const
 {
-    return m_displayEnemys;
+    return m_displayEnemies;
 }
 
-void GroundRealtimePreviewer::setDisplayEnemys(bool displayEnemys)
+void GroundRealtimePreviewer::setDisplayEnemies(bool displayEnemies)
 {
-    m_displayEnemys = displayEnemys;
+    //Save the display enemies data.
+    m_displayEnemies = displayEnemies;
+    //Update.
+    update();
 }
 
 bool GroundRealtimePreviewer::displayRobots() const
@@ -114,7 +128,7 @@ void GroundRealtimePreviewer::setSelectedRobot(Robot *selectedRobot)
 void GroundRealtimePreviewer::setEnemyPositionList(const QList<QPointF> &positions)
 {
     //The size of the position list should be the same as enemys.
-    if(positions.size()!=m_enemys.size())
+    if(positions.size()!=m_enemies.size())
     {
         return;
     }
@@ -128,7 +142,7 @@ void GroundRealtimePreviewer::setEnemyPreviewList(const QList<Enemy *> &enemys,
                                                   const QList<QPointF> &positions)
 {
     //Save all the informations.
-    m_enemys=enemys;
+    m_enemies=enemys;
     m_enemyPositions=positions;
     //Update the previewer.
     update();
@@ -221,7 +235,7 @@ void GroundRealtimePreviewer::paintEvent(QPaintEvent *event)
         }
     }
     //If the user wants to draw the exist enemy, then paint the enemy.
-    if(m_displayEnemys)
+    if(m_displayEnemies)
     {
         QPen enemyPen(RobotBase::robotBorder());
         enemyPen.setWidth(2);
@@ -229,16 +243,16 @@ void GroundRealtimePreviewer::paintEvent(QPaintEvent *event)
         painter.setBrush(RobotBase::robotColor());
         painter.setOpacity(0.2);
         int selectedIndex=-1;
-        for(int i=0; i<m_positions.size(); i++)
+        for(int i=0; i<m_enemyPositions.size(); i++)
         {
             //Check the selected robot
-            if(m_enemys.at(i)==m_selectedEnemy)
+            if(m_enemies.at(i)==m_selectedEnemy)
             {
                 selectedIndex=i;
                 continue;
             }
             //Set the preview pos to the preview robot.
-            m_proxyEnemy->setPos(pointFromGround(m_positions.at(i)));
+            m_proxyEnemy->setPos(pointFromGround(m_enemyPositions.at(i)));
             //Draw the robot.
             m_proxyEnemy->paintRobot(&painter);
         }

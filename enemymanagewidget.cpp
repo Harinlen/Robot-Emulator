@@ -54,7 +54,10 @@ EnemyManageWidget::EnemyManageWidget(QWidget *parent) :
             &QItemSelectionModel::currentChanged,
             [=](const QModelIndex &current)
             {
-                emit requireSelectEnemy(m_enemyList.at(current.row()));
+                if(current.row()<m_enemyList.size())
+                {
+                    emit requireSelectEnemy(m_enemyList.at(current.row()));
+                }
             });
     connect(m_enemyInitialDataModel, &QStandardItemModel::itemChanged,
             [=](QStandardItem *item)
@@ -108,12 +111,11 @@ EnemyManageWidget::EnemyManageWidget(QWidget *parent) :
                 if(m_enemyInitialDataView->selectionModel()->hasSelection() &&
                         m_enemyInitialDataView->currentIndex().isValid())
                 {
-                    int robotIndex=m_enemyInitialDataView->currentIndex().row();
+                    int enemyIndex=m_enemyInitialDataView->currentIndex().row();
                     //Remove the robot from the list.
-                    m_enemyList.removeAt(robotIndex);
+                    m_enemyList.removeAt(enemyIndex);
                     //Remove the initial data from the model.
-                    m_enemyInitialDataModel->removeRow(robotIndex);
-
+                    m_enemyInitialDataModel->removeRow(enemyIndex);
                     //Update all.
                     emit requireUpdateAllList();
                 }

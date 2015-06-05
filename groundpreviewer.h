@@ -59,6 +59,12 @@ signals:
 
 public slots:
     /*!
+     * \brief Update the parameter of the previewer according to the new size.
+     * \param groundSize The new size of the ground.
+     */
+    void onActionGroundSizeChanged(const QSize &groundSize);
+
+    /*!
      * \brief Make the preview widget to display the preview enemy or not.
      * \param showPreviewEnemy The preview enabled value.
      */

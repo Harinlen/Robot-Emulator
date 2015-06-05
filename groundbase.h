@@ -168,6 +168,12 @@ signals:
      */
     void barracksChanged();
 
+    /*!
+     * \brief When the size of ground changed, this signal will be emitted.
+     * \param groundSize The size of the ground.
+     */
+    void groundSizeChanged(QSize groundSize);
+
 public slots:
     /*!
      * \brief Change the time line speed of the ground. The parameter speed

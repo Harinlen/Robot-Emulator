@@ -54,7 +54,10 @@ RobotManageWidget::RobotManageWidget(QWidget *parent) :
             &QItemSelectionModel::currentChanged,
             [=](const QModelIndex &current)
             {
-                emit requireSelectRobot(m_robotList.at(current.row()));
+                if(current.row()<m_robotList.size())
+                {
+                    emit requireSelectRobot(m_robotList.at(current.row()));
+                }
             });
     connect(m_robotInitialDataModel, &QStandardItemModel::itemChanged,
             [=](QStandardItem *item)
