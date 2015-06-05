@@ -18,10 +18,17 @@
 
 /** @mainpage
  *<br/>
+ *<h1>Summary</h1>
  *<span style="font-size: 14pt">
  *      Robot Emulator provides a cross-platform, complete integrated operate
  * environment for guardian robots simulation. <br />
  *      It is available for Linux, OS X and Windows operating systems.
+ *</span>
+ *<h1>Minimum System Requirements</h1>
+ *<span style="font-size: 14pt">
+ * CPU: Intel(R) Pentium(TM) 4 with HT technology. <br />
+ * Memory: 1GB DDRIII 1333 <br />
+ * Graphics card: Intel(R) Graphics 4000.
  *</span>
  *<br/>
  */

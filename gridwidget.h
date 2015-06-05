@@ -41,12 +41,34 @@ public:
      */
     QWidget *widget() const;
 
+    /*!
+     * \brief The grid size parameter.
+     * \return The grid size.
+     */
     static int gridSize();
+
+    /*!
+     * \brief Change the grid size.
+     * \param gridSize The new grid size.
+     */
     static void setGridSize(int gridSize);
 
+    /*!
+     * \brief Get the grid step parameter.
+     * \return The grid step.
+     */
     static int gridStep();
+
+    /*!
+     * \brief Change the grid step size.
+     * \param gridStep The grid step.
+     */
     static void setGridStep(int gridStep);
 
+    /*!
+     * \brief Show or hide coordinate effect.
+     * \return The status of display the coordinate effect.
+     */
     bool coordinate() const;
 
 signals:
@@ -58,6 +80,11 @@ public slots:
      * \param widget The prefer central widget.
      */
     void setWidget(QWidget *widget);
+
+    /*!
+     * \brief Set to display or hide the coordinate effect.
+     * \param coordinate To enabled coordinate effect, true.
+     */
     void setCoordinate(bool coordinate);
 
 protected:
