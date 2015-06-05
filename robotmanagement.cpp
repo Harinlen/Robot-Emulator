@@ -44,6 +44,8 @@ RobotManagement::RobotManagement(QWidget *parent) :
     setLayout(mainLayout);
     QBoxLayout *previewLayout=new QBoxLayout(QBoxLayout::LeftToRight,
                                              m_previewGroup);
+    m_groundPreview->setShowPreviewEnemy(false);
+    m_groundPreview->setDisplayEnemys(false);
     previewLayout->addWidget(m_groundPreview);
     m_previewGroup->setLayout(previewLayout);
     mainLayout->addWidget(m_previewGroup);

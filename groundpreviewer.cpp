@@ -32,7 +32,8 @@ GroundPreviewer::GroundPreviewer(QWidget *parent) :
     m_yOffset(0),
     m_groundParameter(1.0),
     m_showPreviewPoint(false),
-    m_previewRobot(new RobotBase)
+    m_previewRobot(new RobotBase),
+    m_previewEnemy(new RobotBase)
 {
     //Initial size.
     setFixedSize(200,200);
@@ -51,6 +52,14 @@ void GroundPreviewer::previewRobot(QPointF position, qreal angle)
     m_previewRobot->setPos(pointFromGround(position));
     m_previewRobot->setAngle(angle);
     //Update the preivew.
+    update();
+}
+
+void GroundPreviewer::previewEnemy(QPointF position)
+{
+    //Save the preview data.
+    m_previewEnemy->setPos(pointFromGround(position));
+    //Update the preview.
     update();
 }
 
@@ -95,6 +104,18 @@ void GroundPreviewer::paintEvent(QPaintEvent *event)
         painter.setBrush(RobotBase::robotColor());
         m_previewRobot->paintRobot(&painter);
     }
+    //If display the preview enemy.
+    if(m_showPreviewEnemy)
+    {
+        //Paint the preview enemy.
+        painter.setPen(Qt::NoPen);
+        m_previewEnemy->paintEnemyDetectArea(&painter);
+        QPen robotPen(RobotBase::robotBorder());
+        robotPen.setWidth(2);
+        painter.setPen(robotPen);
+        painter.setBrush(RobotBase::robotColor());
+        m_previewEnemy->paintRobot(&painter);
+    }
 }
 
 QPointF GroundPreviewer::pointFromGround(const QPointF &groundPoint)
@@ -103,6 +124,15 @@ QPointF GroundPreviewer::pointFromGround(const QPointF &groundPoint)
                    (groundPoint.y()+m_yOffset)/m_groundParameter*height());
 }
 
+bool GroundPreviewer::showPreviewEnemy() const
+{
+    return m_showPreviewEnemy;
+}
+
+void GroundPreviewer::setShowPreviewEnemy(bool showPreviewEnemy)
+{
+    m_showPreviewEnemy = showPreviewEnemy;
+}
 
 bool GroundPreviewer::showPreviewPoint() const
 {

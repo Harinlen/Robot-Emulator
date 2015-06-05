@@ -29,6 +29,7 @@
 #include <QApplication>
 
 #include "robot.h"
+#include "enemy.h"
 #include "menubar.h"
 #include "generategroundbase.h"
 #include "groundglobal.h"
@@ -41,6 +42,7 @@ Ground::Ground(QWidget *parent) :
     GroundBase(parent),
     m_border(QPolygonF()),
     m_barracks(QPolygonF()),
+    m_reachBorderCount(0),
     m_showDirection(true),
     m_showDetectRadius(true),
     m_filePath(QString()),
@@ -126,28 +128,6 @@ Ground::Ground(QWidget *parent) :
             [=]{update();});
 
     retranslate();
-
-    //-----Example-----
-//    //Border.
-//    debugBorder << QPointF(30, 60) << QPointF(120, 20)
-//                << QPointF(400, 45) << QPointF(415, 280)
-//                << QPointF(180, 340) << QPointF(15, 210);
-
-//    //Barracks.
-//    debugBarracks << QPointF(200, 200) << QPointF(200, 275)
-//                  << QPointF(275, 275) << QPointF(275, 200);
-
-//    //Robots.
-//    Robot(203, 203));
-//    Robot(210, 210));
-//    Robot(210, 220));
-//    Robot(203, 210));
-//    Robot(210, 203));
-//    Robot(203, 250));
-//    Robot(209, 250));
-//    Robot(250, 210));
-//    Robot(203, 207));
-//    Robot(204, 207));
 }
 
 Ground::~Ground()
@@ -232,37 +212,78 @@ void Ground::paintEvent(QPaintEvent *event)
     painter.setOpacity(1.0);
 
     //Draw all the robot.
-    if(m_robotList.isEmpty())
+    if(!m_robotList.isEmpty())
     {
-        return;
-    }
-    //First, draw the detect area.
-    if(m_actions[ShowDetectRange]->isChecked())
-    {
-        painter.setPen(Qt::NoPen);
+        //First, draw the detect area.
+        if(m_actions[ShowDetectRange]->isChecked())
+        {
+            painter.setPen(Qt::NoPen);
+            for(Robot *robot : m_robotList)
+            {
+                robot->paintRobotDetectArea(&painter);
+            }
+        }
+        //Then, draw the parameter.
+        if(m_actions[ShowDirection]->isChecked())
+        {
+            painter.setPen(Robot::directionLineColor());
+            painter.setBrush(Qt::NoBrush);
+            for(Robot *robot : m_robotList)
+            {
+                robot->paintRobotParameter(&painter);
+            }
+        }
+        //Finally, draw the robot.
+        QPen robotPen(Robot::robotBorder());
+        robotPen.setWidth(2);
+        painter.setPen(robotPen);
+        painter.setBrush(Robot::robotColor());
         for(Robot *robot : m_robotList)
         {
-            robot->paintRobotDetectArea(&painter);
+            robot->paintRobot(&painter);
         }
     }
-    //Then, draw the parameter.
-    if(m_actions[ShowDirection]->isChecked())
+
+    //Draw all the enemy.
+    if(!m_enemyList.isEmpty())
     {
-        painter.setPen(Robot::directionLineColor());
-        painter.setBrush(Qt::NoBrush);
-        for(Robot *robot : m_robotList)
+        //First, draw the detect area.
+        if(m_actions[ShowDetectRange]->isChecked())
         {
-            robot->paintRobotParameter(&painter);
+            painter.setPen(Qt::NoPen);
+            for(Enemy *enemy : m_enemyList)
+            {
+                if(!enemy->destory())
+                {
+                    enemy->paintEnemyDetectArea(&painter);
+                }
+            }
         }
-    }
-    //Finally, draw the robot.
-    QPen robotPen(Robot::robotBorder());
-    robotPen.setWidth(2);
-    painter.setPen(robotPen);
-    painter.setBrush(Robot::robotColor());
-    for(Robot *robot : m_robotList)
-    {
-        robot->paintRobot(&painter);
+//        //Then, draw the parameter.
+//        if(m_actions[ShowDirection]->isChecked())
+//        {
+//            painter.setPen(Robot::enemyRadiusColor());
+//            painter.setBrush(Qt::NoBrush);
+//            for(Enemy *enemy : m_enemyList)
+//            {
+//                if(!enemy->destory())
+//                {
+//                    enemy->paintRobotParameter(&painter);
+//                }
+//            }
+//        }
+        //Finally, draw the robot.
+        QPen robotPen(Robot::robotBorder());
+        robotPen.setWidth(2);
+        painter.setPen(robotPen);
+        painter.setBrush(Robot::robotColor());
+        for(Enemy *enemy : m_enemyList)
+        {
+            if(!enemy->destory())
+            {
+                enemy->paintRobot(&painter);
+            }
+        }
     }
 }
 
@@ -286,7 +307,7 @@ void Ground::retranslate()
 
 void Ground::onActionUpdateRobot()
 {
-    //If there're more than 1 robot, we will going to detect the robot.
+    //If there're more than 1 robots, we will going to detect the robot.
     if(m_robotList.size()>1)
     {
         QList<Robot *>::iterator beforeLastRobot=m_robotList.end()-1;
@@ -321,6 +342,40 @@ void Ground::onActionUpdateRobot()
         }
     }
 
+    //Move un-destoied unit enemy if 80% of the robots reach the border.
+    if(m_reachBorderCount>m_minimumMoveEnemyCount)
+    {
+        for(Enemy *enemy : m_enemyList)
+        {
+            if(!enemy->destory())
+            {
+                enemy->moveOneStep();
+            }
+        }
+    }
+
+    //If there'r more than 1 enemies, we will going to detect the enemy.
+    if(!m_enemyList.isEmpty() && !m_robotList.isEmpty())
+    {
+        for(Enemy *enemy : m_enemyList)
+        {
+            //If current enemy is not destoried.
+            if(!enemy->destory())
+            {
+                //Check the distance to all the robot.
+                for(Robot *robot : m_robotList)
+                {
+                    if(pointDistance(enemy->pos(), robot->pos())
+                            < Robot::detectRadius())
+                    {
+                        enemy->setDestory(true);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     //Update all the robot.
     for(Robot *robot : m_robotList)
     {
@@ -336,6 +391,8 @@ void Ground::onActionUpdateRobot()
                 //guard the most recent line.
                 //Appoint the robot to guard that line.
                 appointGuardianLine(robot);
+                //Add the counter.
+                m_reachBorderCount++;
             }
         }
         //Update the direction of the robot.
@@ -602,7 +659,14 @@ void Ground::clearGroundData()
     m_robotList.clear();
     m_robotInitialAngle.clear();
     m_robotInitialPosition.clear();
-
+    //Remove all the enemy datas.
+    qDeleteAll(m_enemyList);
+    m_enemyList.clear();
+    m_enemyInitialPosition.clear();
+    Enemy::setTarget(QPointF(0,0));
+    //Reset the counters.
+    m_reachBorderCount=0;
+    m_minimumMoveEnemyCount=0;
     //Hack way to repaint all the things. WTF!
     hide();
     show();
@@ -697,11 +761,35 @@ bool Ground::readGroundData(const QString &filePath)
 
             robotList.append(robot);
         }
+
+        //Generate the enemy list.
+        QList<Enemy *> enemyList;
+        QJsonArray enemiesData=sessionObject.value("Enemies").toArray();
+        for(QJsonArray::iterator i=enemiesData.begin();
+            i!=enemiesData.end();
+            ++i)
+        {
+            //Generate enemy.
+            QJsonObject enemyData=(*i).toObject();
+            QJsonArray enemyPosition=enemyData.value("Position").toArray();
+            if(enemyPosition.size()!=2)
+            {
+                //Clear the enemies that has been generated.
+                qDeleteAll(enemyList);
+                //Clear the robots that has been generated.
+                qDeleteAll(robotList);
+                return false;
+            }
+            Enemy *enemy=new Enemy(enemyPosition.at(0).toDouble(),
+                                   enemyPosition.at(1).toDouble());
+            enemyList.append(enemy);
+        }
         //If we can go here, then all the data should be ok.
         //Set the border, barracks and robots.
         setBorder(border);
         setBarracks(barracks);
         addRobots(robotList);
+        addEnemies(enemyList);
         //Change the file information and flags.
         QFileInfo sessionFileInfo(sessionFile);
         m_lastOpenFolder=sessionFileInfo.absoluteDir().absolutePath();
@@ -726,7 +814,7 @@ bool Ground::writeGroundData()
     {
         //Generate the json object.
         QJsonObject sessionObject;
-        QJsonArray border, barracks, robots;
+        QJsonArray border, barracks, robots, enemies;
         //Write the border data to session object.
         for(QPointF borderPoint : m_border)
         {
@@ -761,6 +849,20 @@ bool Ground::writeGroundData()
             robots.append(robot);
         }
         sessionObject.insert("Robots", robots);
+        //Write enemy initial data to session object.
+        for(int i=0; i<m_enemyList.size(); i++)
+        {
+            QJsonObject enemy;
+            //Insert the initial position.
+            QJsonArray position;
+            const QPointF &enemyInitialPos=m_enemyInitialPosition.at(i);
+            position.append(enemyInitialPos.x());
+            position.append(enemyInitialPos.y());
+            enemy.insert("Position", position);
+            //Add enemy to enemy list.
+            enemies.append(enemy);
+        }
+        sessionObject.insert("Enemies", enemies);
         //Write the object to file using UTF-8 encoding.
         QTextStream sessionStream(&sessionFile);
         sessionStream.setCodec("UTF-8");
@@ -804,6 +906,11 @@ inline void Ground::appointGuardianLine(Robot *robot)
     robot->setGuardianLine(guardianLine, footPoint);
 }
 
+inline qreal Ground::pointDistance(const QPointF &a, const QPointF &b)
+{
+    return QLineF(a, b).length();
+}
+
 inline qreal Ground::getDistance(const QPointF &point,
                                  const QLineF &line,
                                  QPointF &footPoint)
@@ -844,6 +951,8 @@ bool Ground::addRobot(Robot *robot)
     }
     //Add the available robot to list.
     m_robotList.append(robot);
+    //Update the minimum robot conut.
+    m_minimumMoveEnemyCount=0.8*(qreal)m_robotList.size();
     //Set the changed flag.
     m_changed=true;
     //Add the robot to initial position.
@@ -860,6 +969,43 @@ void Ground::addRobots(const QList<Robot *> &robots)
         ++i)
     {
         addRobot(*i);
+    }
+}
+
+bool Ground::addEnemy(Enemy *enemy)
+{
+    //Check the enemy.
+    //If the position of the enemy is inside the border, or there's already have
+    //a enemy, you can't add this enemy.
+    if(m_border.containsPoint(enemy->pos(), Qt::WindingFill) ||
+            m_enemyInitialPosition.contains(enemy->pos()))
+    {
+        //Delete the enemy.
+        delete enemy;
+        return false;
+    }
+    //Add the avaliable enemy to list.
+    m_enemyList.append(enemy);
+    //Set the changed flag.
+    m_changed=true;
+    //Add the enemy to initial position.
+    m_enemyInitialPosition.append(enemy->pos());
+    //Resize the ground.
+    int enemyRightMost=enemy->pos().x()+(Enemy::detectRadius()<<1),
+            enemyBottomMost=enemy->pos().y()+(Enemy::detectRadius()<<1);
+    setFixedSize(qMax(width(), enemyRightMost),
+                 qMax(height(), enemyBottomMost));
+    return true;
+}
+
+void Ground::addEnemies(const QList<Enemy *> &enemies)
+{
+    //Add the enemy one by one.
+    for(QList<Enemy *>::const_iterator i=enemies.begin();
+        i!=enemies.end();
+        ++i)
+    {
+        addEnemy(*i);
     }
 }
 
@@ -912,6 +1058,29 @@ void Ground::syncRobotData(const QList<Robot *> &robots,
     reset();
 }
 
+void Ground::syncEnemyData(const QList<Enemy *> &enemy,
+                           const QList<QPointF> &initialPosition)
+{
+    //Search all the robots should be removed.
+    while(!m_enemyList.isEmpty())
+    {
+        Enemy *currentEnemy=m_enemyList.takeLast();
+        //Check the robot is still in the list.
+        if(!enemy.contains(currentEnemy))
+        {
+            //Delete the robot.
+            delete currentEnemy;
+        }
+    }
+    //Save the new enemy list and initial positions.
+    m_enemyList=enemy;
+    m_enemyInitialPosition=initialPosition;
+    //Set the change flag.
+    m_changed=true;
+    //Reset the ground.
+    reset();
+}
+
 QAction *Ground::showCoordinate()
 {
     return m_actions[ShowCoordinate];
@@ -937,6 +1106,8 @@ void Ground::setBarracks(const QPolygonF &barracks)
     }
     //Save the barracks.
     m_barracks = barracks;
+    //Set the enemy target.
+    Enemy::setTarget(m_barracks.boundingRect().center());
     //Set the changed flag.
     m_changed=true;
     //Update widget.
@@ -972,6 +1143,8 @@ void Ground::reset()
 {
     //Stop the time line.
     m_timeline->stop();
+    //Clear the counter.
+    m_reachBorderCount=0;
     //Reset all the robot.
     for(int i=0; i<m_robotList.size(); i++)
     {
@@ -984,6 +1157,15 @@ void Ground::reset()
         robot->setPos(m_robotInitialPosition.at(i));
         robot->setAngle(m_robotInitialAngle.at(i));
     }
+    //Reset all the enemy.
+    for(int i=0; i<m_enemyList.size(); i++)
+    {
+        Enemy *enemy=m_enemyList.at(i);
+        //Clear the destory status.
+        enemy->setDestory(false);
+        //Reset the position.
+        enemy->setPos(m_enemyInitialPosition.at(i));
+    }
     //Update the ground.
     update();
 }
@@ -991,6 +1173,16 @@ void Ground::reset()
 QList<Robot *> Ground::robotList() const
 {
     return m_robotList;
+}
+
+QList<Enemy *> Ground::enemyList() const
+{
+    return m_enemyList;
+}
+
+QList<QPointF> Ground::enemyInitialPosition() const
+{
+    return m_enemyInitialPosition;
 }
 
 QList<QPointF> Ground::robotInitialPosition() const

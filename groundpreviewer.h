@@ -49,9 +49,21 @@ public:
      */
     bool showPreviewPoint() const;
 
+    /*!
+     * \brief The widget will display or hide the enemy.
+     * \return If display the preview enemy, will return true, or else false.
+     */
+    bool showPreviewEnemy() const;
+
 signals:
 
 public slots:
+    /*!
+     * \brief Make the preview widget to display the preview enemy or not.
+     * \param showPreviewEnemy The preview enabled value.
+     */
+    void setShowPreviewEnemy(bool showPreviewEnemy);
+
     /*!
      * \brief Set the preview border polygon.
      * \param groundBorder The border polygon.
@@ -72,10 +84,16 @@ public slots:
 
     /*!
      * \brief Will display a robot on the preview map.
-     * \param position
-     * \param angle
+     * \param position The preview robot position.
+     * \param angle The angle of the robot.
      */
     void previewRobot(QPointF position, qreal angle);
+
+    /*!
+     * \brief Will display a enemy on the preview map.
+     * \param position The preview enemy position.
+     */
+    void previewEnemy(QPointF position);
 
 protected:
     /*!
@@ -94,8 +112,8 @@ private:
     QPolygonF m_previewGround, m_previewBarracks;
 
     qreal m_xOffset, m_yOffset, m_groundParameter;
-    bool m_showPreviewPoint;
-    RobotBase *m_previewRobot;
+    bool m_showPreviewPoint, m_showPreviewEnemy;
+    RobotBase *m_previewRobot, *m_previewEnemy;
 
     GroundGlobal *m_groundGlobal;
 };

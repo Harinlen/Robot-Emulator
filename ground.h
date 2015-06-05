@@ -58,6 +58,16 @@ public:
     void addRobots(const QList<Robot *> &robots);
 
     /*!
+     * \brief Reimplemented from GroundBase::addEnemy().
+     */
+    bool addEnemy(Enemy *enemy);
+
+    /*!
+     * \brief Reimplemented from GroundBase::addEnemies().
+     */
+    void addEnemies(const QList<Enemy *> &enemies);
+
+    /*!
      * \brief Reimplemented from GroundBase::setMenuBar().
      */
     void setMenuBar(MenuBar *menuBar);
@@ -75,9 +85,40 @@ public:
                        const QList<qreal> &initialAngle);
 
     /*!
+     * \brief Reimplemented from GroundBase::syncEnemyData().
+     */
+    void syncEnemyData(const QList<Enemy *> &enemy,
+                       const QList<QPointF> &initialPosition);
+
+    /*!
      * \brief Reimplemented from GroundBase::showCoordinate().
      */
     QAction *showCoordinate();
+
+    /*!
+     * \brief Reimplemented from GroundBase::robotList().
+     */
+    QList<Robot *> robotList() const;
+
+    /*!
+     * \brief Reimplemented from GroundBase::enemyList().
+     */
+    QList<Enemy *> enemyList() const;
+
+    /*!
+     * \brief Reimplemented from GroundBase::enemyInitialPosition().
+     */
+    QList<QPointF> enemyInitialPosition() const;
+
+    /*!
+     * \brief Reimplemented from GroundBase::robotInitialPosition().
+     */
+    QList<QPointF> robotInitialPosition() const;
+
+    /*!
+     * \brief Reimplemented from GroundBase::robotInitialAngle().
+     */
+    QList<qreal> robotInitialAngle() const;
 
 signals:
 
@@ -117,21 +158,6 @@ public slots:
      */
     void reset();
 
-    /*!
-     * \brief Reimplemented from GroundBase::robotList().
-     */
-    QList<Robot *> robotList() const;
-
-    /*!
-     * \brief Reimplemented from GroundBase::robotInitialPosition().
-     */
-    QList<QPointF> robotInitialPosition() const;
-
-    /*!
-     * \brief Reimplemented from GroundBase::robotInitialAngle().
-     */
-    QList<qreal> robotInitialAngle() const;
-
 protected:
     /*!
      * \brief This event handler can be reimplemented in a subclass to receive
@@ -165,6 +191,7 @@ private:
     inline bool writeGroundData();
     inline bool inDetectRange(Robot *from, Robot *to);
     inline void appointGuardianLine(Robot *robot);
+    inline qreal pointDistance(const QPointF &a, const QPointF &b);
     inline qreal getDistance(const QPointF &point,
                              const QLineF &line,
                              QPointF &footPoint);
@@ -189,6 +216,9 @@ private:
 
     QPolygonF m_border, m_barracks;
     QList<Robot *> m_robotList;
+    QList<Enemy *> m_enemyList;
+
+    int m_reachBorderCount, m_minimumMoveEnemyCount;
 
     //Display options.
     bool m_showDirection, m_showDetectRadius;
@@ -198,7 +228,7 @@ private:
     bool m_changed;
 
     //Initial data recorder.
-    QList<QPointF> m_robotInitialPosition;
+    QList<QPointF> m_robotInitialPosition, m_enemyInitialPosition;
     QList<qreal> m_robotInitialAngle;
 
     QList<QLineF> m_borderLines;

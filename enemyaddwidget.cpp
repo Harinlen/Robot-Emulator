@@ -17,38 +17,30 @@
  */
 #include <QBoxLayout>
 #include <QPushButton>
-#include <QSpinBox>
+#include <QLineEdit>
 #include <QLabel>
 #include <QGroupBox>
-#include <QSlider>
 
-#include "robotaddwidget.h"
+#include "enemyaddwidget.h"
 
-RobotAddWidget::RobotAddWidget(QWidget *parent) :
+EnemyAddWidget::EnemyAddWidget(QWidget *parent) :
     QWidget(parent),
     m_editArea(new QGroupBox(this)),
     m_okay(new QPushButton(this)),
-    m_cancel(new QPushButton(this)),
-    m_xData(new QSpinBox(this)),
-    m_yData(new QSpinBox(this)),
-    m_angleData(new QSlider(Qt::Horizontal, this))
+    m_cancel(new QPushButton(this))
 {
     //Intial labels.
     for(int i=0; i<3; i++)
     {
         m_labels[i]=new QLabel(this);
     }
-    //Initial the angle data.
-    m_angleData->setRange(0, 360);
-    m_xData->setRange(0, 0);
-    m_yData->setRange(0, 0);
+    m_xData=new QLineEdit(this);
+    m_yData=new QLineEdit(this);
 
     //Link edit widget.
-    connect(m_xData, SIGNAL(valueChanged(int)),
+    connect(m_xData, SIGNAL(textChanged(QString)),
             this, SLOT(onActionParameterChange()));
-    connect(m_yData, SIGNAL(valueChanged(int)),
-            this, SLOT(onActionParameterChange()));
-    connect(m_angleData, SIGNAL(valueChanged(int)),
+    connect(m_yData, SIGNAL(textChanged(QString)),
             this, SLOT(onActionParameterChange()));
 
     //Initial layouts.
@@ -73,11 +65,6 @@ RobotAddWidget::RobotAddWidget(QWidget *parent) :
     positionLayout->addWidget(m_labels[1]);
     positionLayout->addWidget(m_yData, 1);
     controlLayout->addLayout(positionLayout);
-    QBoxLayout *angleLayout=new QBoxLayout(QBoxLayout::LeftToRight,
-                                           mainLayout->widget());
-    angleLayout->addWidget(m_labels[2]);
-    angleLayout->addWidget(m_angleData, 1);
-    controlLayout->addLayout(angleLayout);
     controlLayout->addStretch();
 
     //Generate the button layout.
@@ -92,9 +79,8 @@ RobotAddWidget::RobotAddWidget(QWidget *parent) :
 
     connect(m_okay,
             static_cast<void (QPushButton::*)(bool)>(&QPushButton::clicked),
-            [=]{emit requireAddRobot(QPointF(m_xData->text().toDouble(),
-                                             m_yData->text().toDouble()),
-                                     m_angleData->value());});
+            [=]{emit requireAddEnemy(QPointF(m_xData->text().toDouble(),
+                                             m_yData->text().toDouble()));});
     connect(m_cancel,
             static_cast<void (QPushButton::*)(bool)>(&QPushButton::clicked),
             [=]{emit requireClose();});
@@ -102,53 +88,43 @@ RobotAddWidget::RobotAddWidget(QWidget *parent) :
     retranslate();
 }
 
-void RobotAddWidget::updateXAndYRange(const int &minX, const int &minY,
-                                      const int &maxX, const int &maxY)
-{
-    m_xData->setRange(minX, maxX);
-    m_yData->setRange(minY, maxY);
-}
-
-void RobotAddWidget::enabledWidget()
+void EnemyAddWidget::enabledWidget()
 {
     m_okay->setDefault(true);
     setEnabled(true);
 }
 
-void RobotAddWidget::disabledWidget()
+void EnemyAddWidget::disabledWidget()
 {
     m_okay->setDefault(false);
     setEnabled(false);
 }
 
-void RobotAddWidget::showEvent(QShowEvent *event)
+void EnemyAddWidget::showEvent(QShowEvent *event)
 {
     QWidget::showEvent(event);
     //Reset the data.
-    m_xData->setValue(m_xData->minimum());
-    m_yData->setValue(m_yData->minimum());
-    m_angleData->setValue(0);
+    m_xData->clear();
+    m_yData->clear();
     //Update the preview.
     onActionParameterChange();
     //Set the focus to x data edit.
     m_xData->setFocus();
 }
 
-void RobotAddWidget::retranslate()
+void EnemyAddWidget::retranslate()
 {
     m_okay->setText(tr("Ok"));
     m_cancel->setText(tr("Cancel"));
 
     m_labels[0]->setText(tr("X:"));
     m_labels[1]->setText(tr("Y:"));
-    m_labels[2]->setText(tr("Angle:"));
 
     m_editArea->setTitle(tr("Robot Initial Status"));
 }
 
-void RobotAddWidget::onActionParameterChange()
+void EnemyAddWidget::onActionParameterChange()
 {
-    emit requirePreviewRobot(QPointF(m_xData->text().toDouble(),
-                                     m_yData->text().toDouble()),
-                             m_angleData->value());
+    emit requirePreviewEnemy(QPointF(m_xData->text().toDouble(),
+                                     m_yData->text().toDouble()));
 }

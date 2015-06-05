@@ -19,6 +19,7 @@
 #include <QLabel>
 #include <QGridLayout>
 #include <QPushButton>
+#include <QRegExpValidator>
 #include <QBoxLayout>
 #include <QScopedPointer>
 
@@ -67,6 +68,12 @@ PointEditor::PointEditor(QWidget *parent) :
     m_ok(new QPushButton(tr("OK"), this)),
     m_cancel(new QPushButton(tr("Cancel"), this))
 {
+    //Set the number validator.
+    QRegExp numberReg("[0-9]+$");
+    QValidator *numberValidator=new QRegExpValidator(numberReg,
+                                                     this);
+    m_x->setValidator(numberValidator);
+    m_y->setValidator(numberValidator);
     //Set ok button action.
     connect(m_ok,
             static_cast<void (QPushButton::*)(bool)>(&QPushButton::clicked),

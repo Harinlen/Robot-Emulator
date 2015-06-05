@@ -22,6 +22,7 @@
 #include "groundpreviewer.h"
 
 class Robot;
+class Enemy;
 class GroundBase;
 /*!
  * \brief The GroundRealtimePreview class is a advanced ground preview. It can
@@ -55,6 +56,13 @@ public:
      */
     Robot *selectedRobot() const;
 
+    /*!
+     * \brief The display exists enemys setting.
+     * \return If display the exist enemy, it will be true, or else false.
+     */
+    bool displayEnemys() const;
+
+
 signals:
 
 public slots:
@@ -65,11 +73,25 @@ public slots:
     void setGround(GroundBase *ground);
 
     /*!
-     * \brief Set the the previewer will display or hide the exist robots.
-     * \param displayRobots To display the exist robot, set it true, or else
+     * \brief Set the previewer will display or hide the exist enemys.
+     * \param displayEnemys To display the exist enemys, set it true, or else
+     * false.
+     */
+    void setDisplayEnemys(bool displayEnemys);
+
+    /*!
+     * \brief Set the previewer will display or hide the exist robots.
+     * \param displayRobots To display the exist robots, set it true, or else
      * false.
      */
     void setDisplayRobots(bool displayRobots);
+
+    /*!
+     * \brief Set the selected enemy.
+     * \param selectedEnemy The enemy which will be selected. To cancel the
+     * selection please set a nullptr.
+     */
+    void setSelectedEnemy(Enemy *selectedEnemy);
 
     /*!
      * \brief Set the selected robot.
@@ -77,6 +99,20 @@ public slots:
      * selection please set a nullptr.
      */
     void setSelectedRobot(Robot *selectedRobot);
+
+    /*!
+     * \brief Update the enemy position list.
+     * \param positions The position list.
+     */
+    void setEnemyPositionList(const QList<QPointF> &positions);
+
+    /*!
+     * \brief Update all kinds of preview list info about enemy.
+     * \param enemys The enemy list.
+     * \param positions The position list.
+     */
+    void setEnemyPreviewList(const QList<Enemy *> &enemys,
+                             const QList<QPointF> &positions);
 
     /*!
      * \brief Update the position list.
@@ -112,10 +148,14 @@ private slots:
 
 private:
     Robot *m_proxyRobot;
+    Enemy *m_proxyEnemy;
     GroundBase *m_ground;
-    bool m_displayRobots;
+    bool m_displayRobots, m_displayEnemys;
     Robot *m_selectedRobot;
+    Enemy *m_selectedEnemy;
 
+    QList<Enemy *> m_enemys;
+    QList<QPointF> m_enemyPositions;
     QList<Robot *> m_robots;
     QList<QPointF> m_positions;
     QList<qreal> m_angles;

@@ -79,6 +79,13 @@ public:
     void paintRobotDetectArea(QPainter *painter);
 
     /*!
+     * \brief Paint the detect area of the current enemy robot with the specific
+     * painter.
+     * \param painter The painting painter.
+     */
+    void paintEnemyDetectArea(QPainter *painter);
+
+    /*!
      * \brief Get the size of all the robots.
      * \return The size of all robots.
      */
@@ -171,14 +178,30 @@ public:
      */
     static void setRobotBorder(const QColor &robotBorder);
 
+    /*!
+     * \brief Get the color the all the enemy border color.
+     * \return The QColor of all the enemy border.
+     */
+    static QColor enemyRadiusColor();
+
+    /*!
+     * \brief Set the color of the enemy radius.
+     * \param enemyRadiusColor The QColor of the enemy.
+     */
+    static void setEnemyRadiusColor(const QColor &enemyRadiusColor);
+
 protected:
     QPointF m_pos;
     qreal m_angle;
 
     static int m_robotSize, m_detectRadius;
-    static QColor m_robotColor, m_detectRadiusColor, m_directionLineColor,
-                  m_robotBorder;
+    static QColor m_robotColor;
+    static QColor m_detectRadiusColor;
+    static QColor m_directionLineColor;
+    static QColor m_robotBorder;
+    static QColor m_enemyRadiusColor;
     static QRadialGradient m_detectRadiusGradient;
+    static QRadialGradient m_enemyRadiusGradient;
 };
 
 #endif // ROBOTBASE_H

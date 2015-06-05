@@ -58,6 +58,15 @@ void RobotBase::paintRobotDetectArea(QPainter *painter)
     painter->drawEllipse(m_pos, m_detectRadius, m_detectRadius);
 }
 
+void RobotBase::paintEnemyDetectArea(QPainter *painter)
+{
+    //Draw the enemy detect radius.
+    m_enemyRadiusGradient.setFocalPoint(m_pos);
+    m_enemyRadiusGradient.setCenter(m_pos);
+    painter->setBrush(m_enemyRadiusGradient);
+    painter->drawEllipse(m_pos, m_detectRadius, m_detectRadius);
+}
+
 int RobotBase::m_robotSize=3;
 
 int RobotBase::robotSize()
@@ -143,10 +152,17 @@ QRadialGradient RobotBase::m_detectRadiusGradient=QRadialGradient();
 
 void RobotBase::initialRobotPatameters()
 {
+    //Initial the detected radius gradient.
     m_detectRadiusGradient.setRadius(m_detectRadius);
     m_detectRadiusGradient.setColorAt(0, QColor(0,0,0,0));
     m_detectRadiusGradient.setColorAt(0.6, QColor(0,0,0,0));
     m_detectRadiusGradient.setColorAt(1, m_detectRadiusColor);
+
+    //Initial the enemy detected radius gradient.
+    m_enemyRadiusGradient.setRadius(m_detectRadius);
+    m_enemyRadiusGradient.setColorAt(0, QColor(0,0,0,0));
+    m_enemyRadiusGradient.setColorAt(0.6, QColor(0,0,0,0));
+    m_enemyRadiusGradient.setColorAt(1, m_enemyRadiusColor);
 }
 
 QColor RobotBase::m_robotBorder=QColor(255,255,255);
@@ -159,4 +175,20 @@ QColor RobotBase::robotBorder()
 void RobotBase::setRobotBorder(const QColor &robotBorder)
 {
     m_robotBorder = robotBorder;
+}
+
+QColor RobotBase::m_enemyRadiusColor=QColor(255,0,0);
+
+QRadialGradient RobotBase::m_enemyRadiusGradient=QRadialGradient();
+
+QColor RobotBase::enemyRadiusColor()
+{
+    return m_enemyRadiusColor;
+}
+
+void RobotBase::setEnemyRadiusColor(const QColor &enemyRadiusColor)
+{
+    m_enemyRadiusColor = enemyRadiusColor;
+    //Change the gradient color.
+    m_enemyRadiusGradient.setColorAt(1, m_enemyRadiusColor);
 }

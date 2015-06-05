@@ -38,7 +38,11 @@ SOURCES += \
     robotmanagewidget.cpp \
     about.cpp \
     gridwidget.cpp \
-    robotbase.cpp
+    robotbase.cpp \
+    enemy.cpp \
+    enemyaddwidget.cpp \
+    enemymanagewidget.cpp \
+    enemymanagement.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -61,7 +65,11 @@ HEADERS += \
     about.h \
     gridwidget.h \
     robotbase.h \
-    mainpage.h
+    mainpage.h \
+    enemy.h \
+    enemyaddwidget.h \
+    enemymanagewidget.h \
+    enemymanagement.h
 
 RESOURCES += \
     res.qrc

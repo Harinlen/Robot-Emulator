@@ -27,6 +27,7 @@
 #include "paneldock.h"
 #include "menubar.h"
 #include "robotmanagement.h"
+#include "enemymanagement.h"
 #include "generateground.h"
 
 #include "mainwindow.h"
@@ -37,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_panel(new PanelDock(this)),
     m_menuBar(new MenuBar(this)),
     m_robotManagement(new RobotManagement(this)),
+    m_enemyManagement(new EnemyManagement(this)),
     m_groundGenerator(new GenerateGround(this)),
     m_about(new QAction(this))
 {
@@ -127,6 +129,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //Give the ground to elements.
     m_panel->setGround(m_ground);
     m_robotManagement->setGround(m_ground);
+    m_enemyManagement->setGround(m_ground);
 
     //Add action to menubar.
     m_menuBar->addCategoryAction(MenuBar::Help, m_about);
@@ -134,6 +137,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_ground->setMenuBar(m_menuBar);
     m_panel->setMenuBar(m_menuBar);
     m_robotManagement->setMenuBar(m_menuBar);
+    m_enemyManagement->setMenuBar(m_menuBar);
 
     //Add panel to bottom dock area.
     addDockWidget(Qt::RightDockWidgetArea, m_panel);

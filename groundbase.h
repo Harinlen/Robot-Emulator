@@ -24,6 +24,7 @@
 #include <QWidget>
 
 class Robot;
+class Enemy;
 class MenuBar;
 class GenerateGroundBase;
 /*!
@@ -68,9 +69,24 @@ public:
     /*!
      * \brief Add a lot of robots to the ground. It will call addRobot()
      * function for several times.
-     * \param robots
+     * \param robots The robot list.
      */
     virtual void addRobots(const QList<Robot *> &robots)=0;
+
+    /*!
+     * \brief Add an enemy to the ground. It will detect the start position of
+     * the enemy. If the enemy if in side the border, will delete the enemy.
+     * \param enemy The enemy class which is goint be added.
+     * \return If add the enemy successfully, return true, or else return false.
+     */
+    virtual bool addEnemy(Enemy *enemy)=0;
+
+    /*!
+     * \brief Add a lot of enemies to the ground. It will call addEnemy()
+     * function for several times.
+     * \param enemies The enemy list.
+     */
+    virtual void addEnemies(const QList<Enemy *> &enemies)=0;
 
     /*!
      * \brief Set the menu bar to add control actions.
@@ -91,6 +107,12 @@ public:
     virtual QList<Robot *> robotList() const=0;
 
     /*!
+     * \brief Get all the enemys added to the ground.
+     * \return The enemy QList.
+     */
+    virtual QList<Enemy *> enemyList() const=0;
+
+    /*!
      * \brief Get the initial position of all the robots recorded by ground.
      * \return The initial position list.
      */
@@ -103,7 +125,14 @@ public:
     virtual QList<qreal> robotInitialAngle() const=0;
 
     /*!
+     * \brief Get the initial position of all the enemy recorded by ground.
+     * \return The initial position list.
+     */
+    virtual QList<QPointF> enemyInitialPosition() const=0;
+
+    /*!
      * \brief Set the robots information to the given parameters, remove the
+     * surplus robots.
      * \param robots The robot list.
      * \param initialPosition The initial position of the robots.
      * \param initialAngle The initial angle of the robots.
@@ -111,6 +140,15 @@ public:
     virtual void syncRobotData(const QList<Robot *> &robots,
                                const QList<QPointF> &initialPosition,
                                const QList<qreal> &initialAngle)=0;
+
+    /*!
+     * \brief Set the enemys information to the given parameters, remove the
+     * surplus enemy.
+     * \param enemy The enemy list.
+     * \param initialPosition The initial position of the enemys.
+     */
+    virtual void syncEnemyData(const QList<Enemy *> &enemy,
+                               const QList<QPointF> &initialPosition)=0;
 
     /*!
      * \brief Get the show coordinate action.

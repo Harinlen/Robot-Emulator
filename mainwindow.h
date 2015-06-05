@@ -25,6 +25,7 @@ class Ground;
 class PanelDock;
 class MenuBar;
 class RobotManagement;
+class EnemyManagement;
 class GenerateGround;
 /*!
  * \brief The MainWindow class is the top widget of all the visible widget. The
@@ -54,6 +55,7 @@ private:
     PanelDock *m_panel;
     MenuBar *m_menuBar;
     RobotManagement *m_robotManagement;
+    EnemyManagement *m_enemyManagement;
     GenerateGround *m_groundGenerator;
 
     QAction *m_about;
