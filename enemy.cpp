@@ -18,6 +18,8 @@
 
 #include "enemy.h"
 
+#include <QDebug>
+
 Enemy::Enemy() :
     m_destory(false)
 {
@@ -44,7 +46,8 @@ QPointF Enemy::target()
 
 void Enemy::setTarget(const QPointF &target)
 {
-    m_target = target;
+    //Save the target point.
+    m_target=target;
 }
 
 QPointF Enemy::nextStep(bool &reachTarget)
@@ -75,6 +78,3 @@ void Enemy::setMissionComplete(bool missionAccept)
 {
     m_missionComplete = missionAccept;
 }
-
-
-

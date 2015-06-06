@@ -19,6 +19,7 @@
 
 #include "panel.h"
 #include "menubar.h"
+#include "languagemanager.h"
 
 #include "paneldock.h"
 
@@ -35,6 +36,8 @@ PanelDock::PanelDock(QWidget *parent) :
             static_cast<void (QAction::*)(bool)>(&QAction::triggered),
             [=]{isVisible()?hide():show();});
 
+    connect(LanguageManager::instance(), SIGNAL(languageChanged()),
+            this, SLOT(retranslate()));
     retranslate();
 }
 

@@ -35,6 +35,7 @@ public:
         Ground,
         Robot,
         TimeLine,
+        Language,
         Help,
         ActionCategoriesCount
     };

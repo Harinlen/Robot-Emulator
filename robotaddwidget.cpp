@@ -22,6 +22,8 @@
 #include <QGroupBox>
 #include <QSlider>
 
+#include "languagemanager.h"
+
 #include "robotaddwidget.h"
 
 RobotAddWidget::RobotAddWidget(QWidget *parent) :
@@ -99,6 +101,8 @@ RobotAddWidget::RobotAddWidget(QWidget *parent) :
             static_cast<void (QPushButton::*)(bool)>(&QPushButton::clicked),
             [=]{emit requireClose();});
 
+    connect(LanguageManager::instance(), SIGNAL(languageChanged()),
+            this, SLOT(retranslate()));
     retranslate();
 }
 

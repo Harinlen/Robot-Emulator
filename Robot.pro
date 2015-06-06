@@ -17,6 +17,11 @@ macx
     ICON = icon.icns
 }
 
+TRANSLATIONS += res/Simplified_Chinese.ts \
+                res/Traditional_Chinese.ts \
+                res/English.ts \
+                res/Japanese.ts
+
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
@@ -40,7 +45,8 @@ SOURCES += \
     enemy.cpp \
     enemyaddwidget.cpp \
     enemymanagewidget.cpp \
-    enemymanagement.cpp
+    enemymanagement.cpp \
+    languagemanager.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -67,7 +73,8 @@ HEADERS += \
     enemy.h \
     enemyaddwidget.h \
     enemymanagewidget.h \
-    enemymanagement.h
+    enemymanagement.h \
+    languagemanager.h
 
 RESOURCES += \
     res.qrc

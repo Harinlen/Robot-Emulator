@@ -22,6 +22,7 @@
 
 #include "panel.h"
 #include "menubar.h"
+#include "languagemanager.h"
 #include "groundbase.h"
 
 Panel::Panel(QWidget *parent) :
@@ -78,6 +79,9 @@ Panel::Panel(QWidget *parent) :
     m_commandActions[SetSpeedQuadra]->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_6));
     m_commandActions[SetSpeedPanta]->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_7));
     m_commandActions[SetSpeedHexa]->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_8));
+
+    connect(LanguageManager::instance(), SIGNAL(languageChanged()),
+            this, SLOT(retranslate()));
     retranslate();
 }
 

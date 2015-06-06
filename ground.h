@@ -158,6 +158,12 @@ public slots:
      */
     void reset();
 
+    /*!
+     * \brief Close the current open file.
+     * \return Success or not.
+     */
+    bool closeFile();
+
 protected:
     /*!
      * \brief This event handler can be reimplemented in a subclass to receive

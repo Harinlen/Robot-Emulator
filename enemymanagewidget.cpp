@@ -25,6 +25,7 @@
 
 #include "enemy.h"
 #include "groundbase.h"
+#include "languagemanager.h"
 
 #include "enemymanagewidget.h"
 
@@ -151,6 +152,8 @@ EnemyManageWidget::EnemyManageWidget(QWidget *parent) :
             static_cast<void (QPushButton::*)(bool)>(&QPushButton::clicked),
             [=]{emit requireClose();});
 
+    connect(LanguageManager::instance(), SIGNAL(languageChanged()),
+            this, SLOT(retranslate()));
     retranslate();
 }
 
@@ -168,7 +171,7 @@ void EnemyManageWidget::retranslate()
     m_cancel->setText(tr("Cancel"));
     m_deletePoint->setText(tr("Delete"));
 
-    m_manageBox->setTitle(tr("Robots Force"));
+    m_manageBox->setTitle(tr("Enemies Force"));
 
     updateHeader();
 }

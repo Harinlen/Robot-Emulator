@@ -25,6 +25,7 @@
 #include "enemyaddwidget.h"
 #include "enemymanagewidget.h"
 #include "groundrealtimepreviewer.h"
+#include "languagemanager.h"
 
 #include "enemymanagement.h"
 
@@ -102,6 +103,8 @@ EnemyManagement::EnemyManagement(QWidget *parent) :
     m_stackLayout->addWidget(m_enemyManage);
 
     //Retranslate.
+    connect(LanguageManager::instance(), SIGNAL(languageChanged()),
+            this, SLOT(retranslate()));
     retranslate();
 }
 
@@ -171,7 +174,7 @@ void EnemyManagement::setMenuBar(MenuBar *menuBar)
 void EnemyManagement::retranslate()
 {
     m_actions[AddEnemy]->setText(tr("Add enemy"));
-    m_actions[ManageEnemy]->setText(tr("Manage enemys"));
+    m_actions[ManageEnemy]->setText(tr("Manage enemies"));
 
     m_previewGroup->setTitle(tr("Previewer"));
 }

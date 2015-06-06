@@ -24,6 +24,7 @@
 #include "groundbase.h"
 #include "polygoneditor.h"
 #include "groundpreviewer.h"
+#include "languagemanager.h"
 
 #include "generateground.h"
 
@@ -91,7 +92,7 @@ GenerateGround::GenerateGround(QWidget *parent) :
                                                  tr("Barracks border invalid"),
                                                  tr("The barracks border must be inside the border.\n"
                                                     "You may:\n"
-                                                    "    1. Enlarge the border."
+                                                    "    1. Enlarge the border.\n"
                                                     "    2. Reduce the barracks."));
                         return;
                     }
@@ -132,6 +133,8 @@ GenerateGround::GenerateGround(QWidget *parent) :
     buttonLayout->addWidget(m_cancel);
     buttonLayout->addStretch();
 
+    connect(LanguageManager::instance(), SIGNAL(languageChanged()),
+            this, SLOT(retranslate()));
     retranslate();
 }
 

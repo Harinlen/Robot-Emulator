@@ -21,6 +21,8 @@
 #include <QLabel>
 #include <QGroupBox>
 
+#include "languagemanager.h"
+
 #include "enemyaddwidget.h"
 
 EnemyAddWidget::EnemyAddWidget(QWidget *parent) :
@@ -85,6 +87,8 @@ EnemyAddWidget::EnemyAddWidget(QWidget *parent) :
             static_cast<void (QPushButton::*)(bool)>(&QPushButton::clicked),
             [=]{emit requireClose();});
 
+    connect(LanguageManager::instance(), SIGNAL(languageChanged()),
+            this, SLOT(retranslate()));
     retranslate();
 }
 
@@ -120,7 +124,7 @@ void EnemyAddWidget::retranslate()
     m_labels[0]->setText(tr("X:"));
     m_labels[1]->setText(tr("Y:"));
 
-    m_editArea->setTitle(tr("Robot Initial Status"));
+    m_editArea->setTitle(tr("Enemy Initial Status"));
 }
 
 void EnemyAddWidget::onActionParameterChange()

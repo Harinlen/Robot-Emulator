@@ -19,6 +19,7 @@
 #include <QAction>
 #include <QScrollArea>
 #include <QScrollBar>
+#include <QCloseEvent>
 
 #include "about.h"
 #include "gridwidget.h"
@@ -29,8 +30,11 @@
 #include "robotmanagement.h"
 #include "enemymanagement.h"
 #include "generateground.h"
+#include "languagemanager.h"
 
 #include "mainwindow.h"
+
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -138,6 +142,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_panel->setMenuBar(m_menuBar);
     m_robotManagement->setMenuBar(m_menuBar);
     m_enemyManagement->setMenuBar(m_menuBar);
+    LanguageManager::instance()->setMenuBar(m_menuBar);
 
     //Add panel to bottom dock area.
     addDockWidget(Qt::RightDockWidgetArea, m_panel);
@@ -154,7 +159,20 @@ MainWindow::MainWindow(QWidget *parent) :
     setMenuBar(m_menuBar);
 #endif
 
+    connect(LanguageManager::instance(), SIGNAL(languageChanged()),
+            this, SLOT(retranslate()));
     retranslate();
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    //If the user don't want to close the file, stop close event.
+    if(!m_ground->closeFile())
+    {
+        event->ignore();
+        return;
+    }
+    QMainWindow::closeEvent(event);
 }
 
 void MainWindow::retranslate()

@@ -25,6 +25,7 @@
 #include "robotaddwidget.h"
 #include "robotmanagewidget.h"
 #include "groundrealtimepreviewer.h"
+#include "languagemanager.h"
 
 #include "robotmanagement.h"
 
@@ -108,6 +109,8 @@ RobotManagement::RobotManagement(QWidget *parent) :
     m_stackLayout->addWidget(m_robotManagement);
 
     //Retranslate.
+    connect(LanguageManager::instance(), SIGNAL(languageChanged()),
+            this, SLOT(retranslate()));
     retranslate();
 }
 

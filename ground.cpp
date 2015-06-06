@@ -33,6 +33,7 @@
 #include "menubar.h"
 #include "generategroundbase.h"
 #include "groundglobal.h"
+#include "languagemanager.h"
 
 #include "ground.h"
 
@@ -127,6 +128,8 @@ Ground::Ground(QWidget *parent) :
             static_cast<void (QAction::*)(bool)>(&QAction::triggered),
             [=]{update();});
 
+    connect(LanguageManager::instance(), SIGNAL(languageChanged()),
+            this, SLOT(retranslate()));
     retranslate();
 }
 
@@ -353,16 +356,21 @@ void Ground::onActionUpdateRobot()
             {
                 bool reachTarget=false;
                 QPointF nextStep=enemy->nextStep(reachTarget);
-                if((!Enemy::missionComplete()) && reachTarget)
+
+                if(reachTarget)
                 {
+                    if(Enemy::missionComplete())
+                    {
+                        continue;
+                    }
                     //Set mission complete flag.
                     Enemy::setMissionComplete(true);
                     //Generate the four target point.
                     QList<QPointF> targetPoints;
                     targetPoints << QPointF(0, 0)
-                                << QPointF(width(), 0)
-                                << QPointF(0, height())
-                                << QPointF(width(), height());
+                                 << QPointF(width(), 0)
+                                 << QPointF(0, height())
+                                 << QPointF(width(), height());
                     //Set the new target.
                     for(QPointF point : targetPoints)
                     {
@@ -370,12 +378,14 @@ void Ground::onActionUpdateRobot()
                                                    Qt::WindingFill))
                         {
                             Enemy::setTarget(point);
+                            break;
                         }
                     }
                     //Get the new next step.
                     nextStep=enemy->nextStep(reachTarget);
+                    //Add next step to steps list.
+                    enemy->setPos(nextStep);
                 }
-                //Add next step to steps list.
                 enemy->setPos(nextStep);
             }
         }
@@ -1204,6 +1214,11 @@ void Ground::reset()
     Enemy::setTarget(m_barracks.boundingRect().center());
     //Update the ground.
     update();
+}
+
+bool Ground::closeFile()
+{
+    return onActionClose();
 }
 
 QList<Robot *> Ground::robotList() const

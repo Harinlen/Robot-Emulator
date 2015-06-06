@@ -1,5 +1,9 @@
 <RCC>
     <qresource prefix="/">
         <file>res/icon.png</file>
+        <file>res/languages.json</file>
+        <file>res/Simplified_Chinese.qm</file>
+        <file>res/Traditional_Chinese.qm</file>
+        <file>res/Japanese.qm</file>
     </qresource>
 </RCC>

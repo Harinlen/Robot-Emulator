@@ -17,6 +17,7 @@
  */
 #include <QStyleFactory>
 
+#include "languagemanager.h"
 #include "mainwindow.h"
 
 #include <QApplication>
@@ -36,6 +37,8 @@ int main(int argc, char *argv[])
     QApplication::setApplicationVersion("1.0");
     //Set style.
     QApplication::setStyle(QStyleFactory::create("fusion"));
+    //Load languages.
+    LanguageManager::instance()->loadLanguages();
     //Conrtruct main window.
     MainWindow mainWindow;
     mainWindow.show();

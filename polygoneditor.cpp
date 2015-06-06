@@ -21,6 +21,7 @@
 #include <QStandardItemModel>
 
 #include "pointeditor.h"
+#include "languagemanager.h"
 
 #include "polygoneditor.h"
 
@@ -88,6 +89,8 @@ PolygonEditor::PolygonEditor(QWidget *parent) :
     mainLayout->addWidget(m_groundPoints, 1);
     mainLayout->addLayout(actionLayout);
 
+    connect(LanguageManager::instance(), SIGNAL(languageChanged()),
+            this, SLOT(retranslate()));
     retranslate();
 }
 

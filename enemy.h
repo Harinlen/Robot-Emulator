@@ -53,7 +53,8 @@ public:
     static QPointF target();
 
     /*!
-     * \brief Set the target point of the enemy.
+     * \brief Set the target point of the enemy. All the enemies will move to
+     * the target point.
      * \param target Enemy's target point.
      */
     static void setTarget(const QPointF &target);

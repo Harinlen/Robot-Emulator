@@ -17,6 +17,8 @@
  */
 #include <QMenu>
 
+#include "languagemanager.h"
+
 #include "menubar.h"
 
 MenuBar::MenuBar(QWidget *parent) :
@@ -30,6 +32,8 @@ MenuBar::MenuBar(QWidget *parent) :
     }
 
     //Launch the retranslate.
+    connect(LanguageManager::instance(), SIGNAL(languageChanged()),
+            this, SLOT(retranslate()));
     retranslate();
 }
 
@@ -49,5 +53,6 @@ void MenuBar::retranslate()
     m_categoryMenu[Ground]->setTitle(tr("Ground"));
     m_categoryMenu[Robot]->setTitle(tr("Robot"));
     m_categoryMenu[TimeLine]->setTitle(tr("Time Line"));
+    m_categoryMenu[Language]->setTitle(tr("Language"));
     m_categoryMenu[Help]->setTitle(tr("Help"));
 }

@@ -25,6 +25,7 @@
 
 #include "robot.h"
 #include "groundbase.h"
+#include "languagemanager.h"
 
 #include "robotmanagewidget.h"
 
@@ -153,6 +154,8 @@ RobotManageWidget::RobotManageWidget(QWidget *parent) :
             static_cast<void (QPushButton::*)(bool)>(&QPushButton::clicked),
             [=]{emit requireClose();});
 
+    connect(LanguageManager::instance(), SIGNAL(languageChanged()),
+            this, SLOT(retranslate()));
     retranslate();
 }
 
