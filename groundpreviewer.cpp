@@ -172,6 +172,11 @@ bool GroundPreviewer::showPreviewPoint() const
 void GroundPreviewer::setPreviewBorder(const QPolygonF &groundBorder)
 {
     //Update the ground height and width.
+    onActionGroundSizeChanged(
+                QSize(groundBorder.boundingRect().right()+
+                            (RobotBase::robotSize()<<1),
+                      groundBorder.boundingRect().bottom()+
+                            (RobotBase::robotSize()<<1)));
     //Gernerate the preview border, will zoom the original ground.
     QPolygonF previewGroundBorder;
     for(QPointF borderPoint : groundBorder)

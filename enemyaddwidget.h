@@ -88,7 +88,7 @@ private slots:
 private:
     QGroupBox *m_editArea;
     QPushButton *m_okay, *m_cancel;
-    QLabel *m_labels[2];
+    QLabel *m_labels[3];
     QLineEdit *m_xData, *m_yData;
 };
 

@@ -464,8 +464,17 @@ void Ground::onActionNew()
         //Get the new data.
         if(QDialog::Accepted==m_generator->exec())
         {
+            //Set the border and barracks.
             setBorder(m_generator->border());
             setBarracks(m_generator->barracks());
+            //Set changed flag.
+            m_changed=true;
+            //Update the image.
+            update();
+            //Enabled save and save as actions.
+            m_actions[Save]->setEnabled(true);
+            m_actions[SaveAs]->setEnabled(true);
+            m_actions[Close]->setEnabled(true);
         }
     }
 }

@@ -32,10 +32,11 @@ EnemyAddWidget::EnemyAddWidget(QWidget *parent) :
     m_cancel(new QPushButton(this))
 {
     //Intial labels.
-    for(int i=0; i<3; i++)
+    for(int i=0; i<2; i++)
     {
         m_labels[i]=new QLabel(this);
     }
+
     m_xData=new QLineEdit(this);
     m_yData=new QLineEdit(this);
 
