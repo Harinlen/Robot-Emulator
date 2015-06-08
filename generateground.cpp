@@ -43,6 +43,9 @@ GenerateGround::GenerateGround(QWidget *parent) :
     setWindowFlags(Qt::Sheet);
 #endif
 
+    m_previewer->setShowPreviewEnemy(false);
+    m_previewer->setShowPreviewPoint(false);
+
     //Link the previewer.
     connect(m_borderEditor, &PolygonEditor::polygonChange,
             m_previewer, &GroundPreviewer::setPreviewBorder);

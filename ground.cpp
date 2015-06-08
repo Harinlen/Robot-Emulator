@@ -709,6 +709,7 @@ void Ground::clearGroundData()
     qDeleteAll(m_enemyList);
     m_enemyList.clear();
     m_enemyInitialPosition.clear();
+    Enemy::setMissionComplete(false);
     Enemy::setTarget(QPointF(0,0));
     //Reset the counters.
     m_reachBorderCount=0;
@@ -1017,6 +1018,8 @@ void Ground::addRobots(const QList<Robot *> &robots)
     {
         addRobot(*i);
     }
+    //Update the minimum robot conut.
+    m_minimumMoveEnemyCount=0.8*(qreal)m_robotList.size();
 }
 
 bool Ground::addEnemy(Enemy *enemy)
@@ -1104,6 +1107,8 @@ void Ground::syncRobotData(const QList<Robot *> &robots,
     m_robotList=robots;
     m_robotInitialPosition=initialPosition;
     m_robotInitialAngle=initialAngle;
+    //Update the minimum robot conut.
+    m_minimumMoveEnemyCount=0.8*(qreal)m_robotList.size();
     //Set the change flag.
     m_changed=true;
     //Reset the ground.
